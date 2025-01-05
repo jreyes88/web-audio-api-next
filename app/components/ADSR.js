@@ -1,6 +1,5 @@
 "use client";
 import { useContext } from "react";
-
 import { CTX } from "../context/Store";
 
 export default function ADSR() {

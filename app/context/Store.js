@@ -3,12 +3,7 @@
 import { createContext, useReducer } from "react";
 import Osc from "./Osc";
 
-// console.log(window);
-
-// let AudioContext;
-// if (typeof window !== undefined) {
 const AudioContext = window.AudioContext || window.webkitAudioContext;
-// }
 
 let actx = new AudioContext();
 let out = actx.destination;
@@ -71,6 +66,7 @@ export function reducer(state, action) {
         freq,
         state.osc1Settings.detune,
         state.envelope,
+        state.lfoSettings.frequency,
         gain1
       );
       nodes.push(newOsc);
@@ -82,7 +78,6 @@ export function reducer(state, action) {
       // can probably spread and slice this
       let newNodes = [];
       nodes.forEach((node) => {
-        console.log(node.oscillator);
         if (Math.round(node.oscillator.frequency.value) === Math.round(freq)) {
           node.stop();
         } else {
@@ -102,6 +97,22 @@ export function reducer(state, action) {
         },
       };
     }
+    case "CHANGE_LFO": {
+      const whatever = {
+        ...state,
+        lfoSettings: {
+          ...state.lfoSettings,
+          [id]: Number(value),
+        },
+      };
+      return {
+        ...state,
+        lfoSettings: {
+          ...state.lfoSettings,
+          [id]: Number(value),
+        },
+      };
+    }
     default: {
       console.error("reducer error: action: ", action);
       return {
@@ -116,6 +127,10 @@ export default function Store({ children }) {
     osc1Settings: {
       detune: 0,
       type: "sine",
+    },
+    lfoSettings: {
+      frequency: 1,
+      gainValue: 100,
     },
     filterSettings: {
       frequency: filter.frequency.value,
