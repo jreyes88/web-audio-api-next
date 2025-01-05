@@ -1,14 +1,7 @@
 export default class Oscillator {
-  constructor(
-    actx,
-    type,
-    frequency,
-    detune,
-    envelope,
-    lfoFrequency,
-    connection
-  ) {
+  constructor(actx, type, frequency, detune, envelope, lfo, connection) {
     this.actx = actx;
+    this.easing = 0.005;
     // envelope ADSR filter
     this.envelope = envelope || {
       attack: 0.005,
@@ -31,12 +24,21 @@ export default class Oscillator {
 
     // LFO
     this.LFO = actx.createOscillator();
-    this.LFO.frequency.value = lfoFrequency; // max is about 15?
+    //  LFO Rate
+    this.LFO.frequency.value = lfo.rate; // max is about 15?
+
     this.LFOGain = actx.createGain();
-    this.LFOGain.gain.value = 100;
+    let { currentTime } = this.actx;
+    this.LFOGain.gain.cancelScheduledValues(currentTime);
+    this.LFOGain.gain.setValueAtTime(0, currentTime + this.easing);
+    this.LFOGain.gain.linearRampToValueAtTime(
+      100,
+      currentTime + lfo.delay + this.easing
+    );
+
     this.LFO.connect(this.LFOGain);
     this.LFOGain.connect(this.oscillator.detune);
-    this.easing = 0.005;
+
     this.oscillator.start();
     this.LFO.start();
     this.start();

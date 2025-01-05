@@ -1,10 +1,11 @@
 "use client";
 import { useContext } from "react";
 import { CTX } from "../../context/Store";
+import styles from "./LFO.module.scss";
 
 export default function LFO() {
   const [appState, updateState] = useContext(CTX);
-  const { frequency } = appState.lfoSettings;
+  const { rate, delay } = appState.lfoSettings;
   const change = (e) => {
     let { id, value } = e.target;
     updateState({
@@ -16,19 +17,39 @@ export default function LFO() {
     });
   };
   return (
-    <div>
-      <h2>LFO</h2>
-      {/* slider 1: 0.1 to 15 */}
-      <label htmlFor="frequency">Frequency (Rate)</label>
-      <input
-        type="range"
-        id="frequency"
-        max="15"
-        min="0.1"
-        step="0.1"
-        value={frequency}
-        onChange={change}
-      />
+    <div className={styles.LFO}>
+      <h2 className={styles.title}>LFO</h2>
+      <div className={styles.sliderContainer}>
+        <input
+          type="range"
+          id="rate"
+          max="15"
+          min="0.1"
+          step="0.1"
+          value={rate}
+          onChange={change}
+          className={styles.slider}
+        />
+        <label htmlFor="rate" className={styles.label}>
+          Rate
+        </label>
+      </div>
+
+      <div className={styles.sliderContainer}>
+        <input
+          type="range"
+          id="delay"
+          max="2"
+          min="0"
+          step="0.1"
+          value={delay}
+          onChange={change}
+          className={styles.slider}
+        />
+        <label htmlFor="delay" className={styles.label}>
+          Delay
+        </label>
+      </div>
     </div>
   );
 }

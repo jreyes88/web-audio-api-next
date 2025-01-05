@@ -66,7 +66,7 @@ export function reducer(state, action) {
         freq,
         state.osc1Settings.detune,
         state.envelope,
-        state.lfoSettings.frequency,
+        state.lfoSettings,
         gain1
       );
       nodes.push(newOsc);
@@ -129,8 +129,9 @@ export default function Store({ children }) {
       type: "sine",
     },
     lfoSettings: {
-      frequency: 1,
-      gainValue: 100,
+      rate: 1, // Rate slider
+      delay: 0, // Delay Slider
+      gainValue: 100, //LFO Knob
     },
     filterSettings: {
       frequency: filter.frequency.value,
