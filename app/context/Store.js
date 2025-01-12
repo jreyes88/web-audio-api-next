@@ -1,9 +1,11 @@
 "use client";
 
 import { createContext, useReducer } from "react";
-import Osc from "./Osc";
+import Oscillator from "./Oscillator";
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
+const AudioBuffer = window.AudioBuffer;
+const AudioBufferSourceNode = window.AudioBufferSourceNode;
 
 let actx = new AudioContext();
 let out = actx.destination;
@@ -19,7 +21,7 @@ export { CTX };
 let nodes = [];
 
 export function reducer(state, action) {
-  const { id, value, note, freq } = action.payload || {};
+  const { id, value, freq } = action.payload || {};
   switch (action.type) {
     case "CHANGE_OSC1": {
       return {
@@ -60,14 +62,16 @@ export function reducer(state, action) {
       };
     }
     case "MAKE_OSC": {
-      const newOsc = new Osc(
+      const newOsc = new Oscillator(
         actx,
         state.osc1Settings.type,
         freq,
         state.osc1Settings.detune,
-        state.envelope,
+        state.envelopeSettings,
         state.lfoSettings,
-        gain1
+        gain1,
+        AudioBuffer,
+        AudioBufferSourceNode
       );
       nodes.push(newOsc);
       return {
@@ -91,20 +95,13 @@ export function reducer(state, action) {
     case "CHANGE_ADSR": {
       return {
         ...state,
-        envelope: {
-          ...state.envelope,
+        envelopeSettings: {
+          ...state.envelopeSettings,
           [id]: Number(value),
         },
       };
     }
     case "CHANGE_LFO": {
-      const whatever = {
-        ...state,
-        lfoSettings: {
-          ...state.lfoSettings,
-          [id]: Number(value),
-        },
-      };
       return {
         ...state,
         lfoSettings: {
@@ -131,7 +128,8 @@ export default function Store({ children }) {
     lfoSettings: {
       rate: 1, // Rate slider
       delay: 0, // Delay Slider
-      gainValue: 100, //LFO Knob
+      gain: 100, // LFO Knob
+      noise: 1, // Noise knob
     },
     filterSettings: {
       frequency: filter.frequency.value,
@@ -140,7 +138,7 @@ export default function Store({ children }) {
       gain: filter.gain.value,
       type: filter.type,
     },
-    envelope: {
+    envelopeSettings: {
       attack: 0.005,
       decay: 0.1,
       sustain: 0.6,

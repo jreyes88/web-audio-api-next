@@ -4,7 +4,7 @@ import { CTX } from "../context/Store";
 
 export default function ADSR() {
   const [appState, updateState] = useContext(CTX);
-  const { attack, decay, sustain, release } = appState.envelope;
+  const { attack, decay, sustain, release } = appState.envelopeSettings;
   const change = (e) => {
     let { id, value } = e.target;
     updateState({

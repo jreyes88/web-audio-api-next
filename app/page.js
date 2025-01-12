@@ -3,8 +3,8 @@ import Filter from "./components/Filter";
 import Keyboard from "./components/Keyboard";
 import ADSR from "./components/ADSR";
 
-import Waveform from "./components/Waveform/Waveform";
 import LFO from "./components/LFO/LFO";
+import Osc from "./components/OSC/OSC";
 
 import styles from "./page.module.scss";
 
@@ -16,7 +16,7 @@ export default function Home() {
       </header>
       <div className={styles.synth}>
         <LFO />
-        <Waveform />
+        <Osc />
         <Osc1 />
         <ADSR />
         {/* <Filter /> */}
