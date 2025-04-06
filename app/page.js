@@ -1,4 +1,5 @@
-import Osc1 from "./components/Osc1";
+"use client";
+// import Osc1 from "./components/Osc1";
 import Filter from "./components/Filter";
 import Keyboard from "./components/Keyboard";
 import ADSR from "./components/ADSR";
@@ -17,9 +18,9 @@ export default function Home() {
       <div className={styles.synth}>
         <LFO />
         <Osc />
-        <Osc1 />
+        {/* <Osc1 /> */}
         <ADSR />
-        {/* <Filter /> */}
+        <Filter />
         <Keyboard />
       </div>
     </div>

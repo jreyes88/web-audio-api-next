@@ -1,5 +1,14 @@
 import "./globals.css";
 import Store from "./context/Store";
+import { Orbitron } from "next/font/google";
+
+const font = Orbitron({
+  subsets: ["latin"],
+  variable: "--font-sans-serif",
+  display: "swap",
+});
+
+import "./styles/globals.scss";
 
 export const metadata = {
   title: "Create Next App",
@@ -9,7 +18,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <Store>
-      <html lang="en">
+      <html lang="en" className={`${font.variable}`}>
         <body>{children}</body>
       </html>
     </Store>

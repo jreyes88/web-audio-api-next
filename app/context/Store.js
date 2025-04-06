@@ -1,18 +1,7 @@
 "use client";
-
-import { createContext, useReducer } from "react";
 import Oscillator from "./Oscillator";
 
-const AudioContext = window.AudioContext || window.webkitAudioContext;
-const AudioBuffer = window.AudioBuffer;
-const AudioBufferSourceNode = window.AudioBufferSourceNode;
-
-let actx = new AudioContext();
-let out = actx.destination;
-let gain1 = actx.createGain();
-let filter = actx.createBiquadFilter();
-gain1.connect(filter);
-filter.connect(out);
+import { createContext, useReducer } from "react";
 
 const CTX = createContext();
 
@@ -20,56 +9,61 @@ export { CTX };
 
 let nodes = [];
 
-export function reducer(state, action) {
+const initialState = {
+  windowWidth: 0,
+  filter: null,
+  osc1Settings: {
+    detune: 0,
+    type: "sine",
+  },
+  lfoSettings: {
+    rate: 1, // Rate slider
+    delay: 0, // Delay Slider
+    gain: 100, // LFO Knob
+    noise: 1, // Noise knob
+  },
+  envelopeSettings: {
+    attack: 0.005,
+    decay: 0.1,
+    sustain: 0.6,
+    release: 0.1,
+  },
+  filterSettings: {
+    frequency: 350,
+    detune: 0,
+    Q: 1,
+    gain: 0,
+    type: "lowpass",
+  },
+};
+
+const reducer = (state, action) => {
+  if (state.filter) {
+    state.filter["frequency"].value = state.filterSettings.frequency;
+    state.filter["detune"].value = state.filterSettings.detune;
+    state.filter["Q"].value = state.filterSettings.Q;
+    state.filter["gain"].value = state.filterSettings.gain;
+    state.filter.type = state.filterSettings.type;
+  }
   const { id, value, freq } = action.payload || {};
   switch (action.type) {
-    case "CHANGE_OSC1": {
+    case "SET_WINDOW_WIDTH": {
       return {
         ...state,
-        osc1Settings: {
-          ...state.osc1Settings,
-          [id]: value,
-        },
+        windowWidth: action.payload,
       };
     }
-    case "CHANGE_OSC1_TYPE": {
-      return {
-        ...state,
-        osc1Settings: {
-          ...state.osc1Settings,
-          [id]: value,
-        },
-      };
-    }
-    case "CHANGE_FILTER": {
-      filter[id].value = value;
-      return {
-        ...state,
-        filterSettings: {
-          ...state.filterSettings,
-          [id]: value,
-        },
-      };
-    }
-    case "CHANGE_FILTER_TYPE": {
-      filter[id] = value;
-      return {
-        ...state,
-        filterSettings: {
-          ...state.filterSettings,
-          [id]: value,
-        },
-      };
-    }
-    case "MAKE_OSC": {
+    case "MAKE_OSCILLATOR": {
+      const { audioContext, gain, filter } = action.payload;
+      state.filter = filter;
       const newOsc = new Oscillator(
-        actx,
+        audioContext,
         state.osc1Settings.type,
         freq,
         state.osc1Settings.detune,
         state.envelopeSettings,
         state.lfoSettings,
-        gain1,
+        gain,
         AudioBuffer,
         AudioBufferSourceNode
       );
@@ -78,7 +72,7 @@ export function reducer(state, action) {
         ...state,
       };
     }
-    case "KILL_OSC": {
+    case "KILL_OSCILLATOR": {
       // can probably spread and slice this
       let newNodes = [];
       nodes.forEach((node) => {
@@ -92,6 +86,33 @@ export function reducer(state, action) {
         ...state,
       };
     }
+    case "CHANGE_OSCILLATOR_TYPE": {
+      return {
+        ...state,
+        osc1Settings: {
+          ...state.osc1Settings,
+          [id]: value,
+        },
+      };
+    }
+    // case "CHANGE_OSCILLATOR": {
+    //   return {
+    //     ...state,
+    //     osc1Settings: {
+    //       ...state.osc1Settings,
+    //       [id]: value,
+    //     },
+    //   };
+    // }
+    case "CHANGE_LFO": {
+      return {
+        ...state,
+        lfoSettings: {
+          ...state.lfoSettings,
+          [id]: Number(value),
+        },
+      };
+    }
     case "CHANGE_ADSR": {
       return {
         ...state,
@@ -101,12 +122,27 @@ export function reducer(state, action) {
         },
       };
     }
-    case "CHANGE_LFO": {
+    case "CHANGE_FILTER": {
+      if (state.filter) {
+        state.filter[id].value = value;
+      }
       return {
         ...state,
-        lfoSettings: {
-          ...state.lfoSettings,
-          [id]: Number(value),
+        filterSettings: {
+          ...state.filterSettings,
+          [id]: value,
+        },
+      };
+    }
+    case "CHANGE_FILTER_TYPE": {
+      if (state.filter) {
+        state.filter[id] = value;
+      }
+      return {
+        ...state,
+        filterSettings: {
+          ...state.filterSettings,
+          [id]: value,
         },
       };
     }
@@ -117,33 +153,9 @@ export function reducer(state, action) {
       };
     }
   }
-}
+};
 
 export default function Store({ children }) {
-  const stateHook = useReducer(reducer, {
-    osc1Settings: {
-      detune: 0,
-      type: "sine",
-    },
-    lfoSettings: {
-      rate: 1, // Rate slider
-      delay: 0, // Delay Slider
-      gain: 100, // LFO Knob
-      noise: 1, // Noise knob
-    },
-    filterSettings: {
-      frequency: filter.frequency.value,
-      detune: filter.detune.value,
-      Q: filter.Q.value,
-      gain: filter.gain.value,
-      type: filter.type,
-    },
-    envelopeSettings: {
-      attack: 0.005,
-      decay: 0.1,
-      sustain: 0.6,
-      release: 0.1,
-    },
-  });
+  const stateHook = useReducer(reducer, initialState);
   return <CTX.Provider value={stateHook}>{children}</CTX.Provider>;
 }

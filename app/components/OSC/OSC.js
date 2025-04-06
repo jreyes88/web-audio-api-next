@@ -5,15 +5,15 @@ import { CTX } from "../../context/Store";
 import styles from "./OSC.module.scss";
 
 export default function OSC() {
-  const [appState, updateState] = useContext(CTX);
-  const { gain, noise } = appState.lfoSettings;
+  const [state, dispatch] = useContext(CTX);
+  const { gain, noise } = state.lfoSettings;
 
-  const { type } = appState.osc1Settings;
+  const { type } = state.osc1Settings;
 
   const changeType = (e) => {
     let { id, value } = e.target;
-    updateState({
-      type: "CHANGE_OSC1_TYPE",
+    dispatch({
+      type: "CHANGE_OSCILLATOR_TYPE",
       payload: {
         id,
         value,
@@ -23,7 +23,7 @@ export default function OSC() {
 
   const changeLFOGain = (e) => {
     let { id, value } = e.target;
-    updateState({
+    dispatch({
       type: "CHANGE_LFO",
       payload: {
         id,

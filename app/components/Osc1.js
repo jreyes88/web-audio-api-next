@@ -4,14 +4,14 @@ import { useContext } from "react";
 import { CTX } from "../context/Store";
 
 export default function Osc1() {
-  const [appState, updateState] = useContext(CTX);
+  const [state, dispatch] = useContext(CTX);
 
-  const { detune, type } = appState.osc1Settings;
+  const { detune, type } = state.osc1Settings;
 
   const change = (e) => {
     let { id, value } = e.target;
-    updateState({
-      type: "CHANGE_OSC1",
+    dispatch({
+      type: "CHANGE_OSCILLATOR",
       payload: {
         id,
         value,
@@ -21,8 +21,8 @@ export default function Osc1() {
 
   const changeType = (e) => {
     let { id, value } = e.target;
-    updateState({
-      type: "CHANGE_OSC1_TYPE",
+    dispatch({
+      type: "CHANGE_OSCILLATOR_TYPE",
       payload: {
         id,
         value,

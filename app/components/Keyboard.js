@@ -6,7 +6,7 @@ import QwertyHancock from "qwerty-hancock";
 import styles from "./Keyboard.module.scss";
 
 export default function Keyboard() {
-  const [appState, updateState] = useContext(CTX);
+  const [state, dispatch] = useContext(CTX);
 
   useEffect(() => {
     const keyboard = new QwertyHancock({
@@ -17,17 +17,27 @@ export default function Keyboard() {
       startNote: "C4",
     });
     keyboard.keyDown = (note, freq) => {
-      updateState({
-        type: "MAKE_OSC",
+      const audioContext = new window.AudioContext();
+      const out = audioContext.destination;
+      const gain = audioContext.createGain();
+      const filter = audioContext.createBiquadFilter();
+      gain.connect(filter);
+      filter.connect(out);
+
+      dispatch({
+        type: "MAKE_OSCILLATOR",
         payload: {
+          audioContext,
+          gain,
           note,
           freq,
+          filter,
         },
       });
     };
     keyboard.keyUp = (note, freq) => {
-      updateState({
-        type: "KILL_OSC",
+      dispatch({
+        type: "KILL_OSCILLATOR",
         payload: {
           note,
           freq,

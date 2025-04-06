@@ -3,11 +3,11 @@ import { useContext } from "react";
 import { CTX } from "../context/Store";
 
 export default function ADSR() {
-  const [appState, updateState] = useContext(CTX);
-  const { attack, decay, sustain, release } = appState.envelopeSettings;
+  const [state, dispatch] = useContext(CTX);
+  const { attack, decay, sustain, release } = state.envelopeSettings;
   const change = (e) => {
     let { id, value } = e.target;
-    updateState({
+    dispatch({
       type: "CHANGE_ADSR",
       payload: {
         id,

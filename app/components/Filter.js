@@ -4,13 +4,13 @@ import { useContext } from "react";
 import { CTX } from "../context/Store";
 
 export default function Filter() {
-  const [appState, updateState] = useContext(CTX);
+  const [state, dispatch] = useContext(CTX);
 
-  const { frequency, detune, Q, gain, type } = appState.filterSettings;
+  const { frequency, detune, Q, gain, type } = state.filterSettings;
 
   const change = (e) => {
     let { id, value } = e.target;
-    updateState({
+    dispatch({
       type: "CHANGE_FILTER",
       payload: {
         id,
@@ -21,7 +21,7 @@ export default function Filter() {
 
   const changeType = (e) => {
     let { id, value } = e.target;
-    updateState({
+    dispatch({
       type: "CHANGE_FILTER_TYPE",
       payload: {
         id,

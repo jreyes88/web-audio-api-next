@@ -4,11 +4,11 @@ import { CTX } from "../../context/Store";
 import styles from "./LFO.module.scss";
 
 export default function LFO() {
-  const [appState, updateState] = useContext(CTX);
-  const { rate, delay } = appState.lfoSettings;
+  const [state, dispatch] = useContext(CTX);
+  const { rate, delay } = state.lfoSettings;
   const change = (e) => {
     let { id, value } = e.target;
-    updateState({
+    dispatch({
       type: "CHANGE_LFO",
       payload: {
         id,
