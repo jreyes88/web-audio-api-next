@@ -1,1 +1,13 @@
+@use "reset";
 @use "typography";
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(-223deg, #d7c1cc, #8286f6);
+}

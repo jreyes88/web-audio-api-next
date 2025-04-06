@@ -1,5 +1,4 @@
 .app {
-  background-color: black;
 }
 
 .synth {
@@ -7,5 +6,5 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
   color: white;
-  border: 1px solid red;
+  height: 100%;
 }

@@ -11,10 +11,11 @@ export default function Keyboard() {
   useEffect(() => {
     const keyboard = new QwertyHancock({
       id: "keyboard",
-      width: "449",
-      height: "70",
+      width: "908",
+      height: "150",
       octaves: 2,
       startNote: "C4",
+      activeColour: "#6495ed",
     });
     keyboard.keyDown = (note, freq) => {
       const audioContext = new window.AudioContext();

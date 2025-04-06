@@ -1,4 +1,4 @@
-import "./globals.css";
+import "./styles/globals.scss";
 import Store from "./context/Store";
 import { Orbitron } from "next/font/google";
 
@@ -7,8 +7,6 @@ const font = Orbitron({
   variable: "--font-sans-serif",
   display: "swap",
 });
-
-import "./styles/globals.scss";
 
 export const metadata = {
   title: "Create Next App",
