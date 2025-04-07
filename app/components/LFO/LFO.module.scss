@@ -5,18 +5,24 @@
 
 .title {
   grid-column: 1 / -1;
+  text-align: center;
 }
 
 .sliderContainer {
   display: flex;
   flex-direction: column;
+  height: 200px;
 }
 
 .slider {
   transform: rotate(270deg);
-  flex: 1;
+  flex: 4;
 }
 
 .label {
   text-align: center;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
