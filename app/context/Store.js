@@ -12,6 +12,7 @@ let nodes = [];
 const initialState = {
   windowWidth: 0,
   filter: null,
+  osc1: null,
   osc1Settings: {
     detune: 0,
     type: "sine",
@@ -54,20 +55,10 @@ const reducer = (state, action) => {
       };
     }
     case "MAKE_OSCILLATOR": {
-      const { audioContext, gain, filter } = action.payload;
+      const { osc1, filter } = action.payload;
       state.filter = filter;
-      const newOsc = new Oscillator(
-        audioContext,
-        state.osc1Settings.type,
-        freq,
-        state.osc1Settings.detune,
-        state.envelopeSettings,
-        state.lfoSettings,
-        gain,
-        AudioBuffer,
-        AudioBufferSourceNode
-      );
-      nodes.push(newOsc);
+      state.osc1 = osc1;
+      nodes.push(osc1);
       return {
         ...state,
       };
@@ -87,6 +78,9 @@ const reducer = (state, action) => {
       };
     }
     case "CHANGE_OSCILLATOR_TYPE": {
+      if (state.osc1.oscillator) {
+        state.osc1.oscillator[id] = value;
+      }
       return {
         ...state,
         osc1Settings: {
@@ -95,15 +89,6 @@ const reducer = (state, action) => {
         },
       };
     }
-    // case "CHANGE_OSCILLATOR": {
-    //   return {
-    //     ...state,
-    //     osc1Settings: {
-    //       ...state.osc1Settings,
-    //       [id]: value,
-    //     },
-    //   };
-    // }
     case "CHANGE_LFO": {
       return {
         ...state,

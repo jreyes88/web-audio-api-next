@@ -58,20 +58,6 @@ export default function OSC() {
         <label htmlFor="noise" className={styles.label}>
           Noise
         </label>
-        {/* <input
-          type="range"
-          id="rate"
-          max="15"
-          min="0.1"
-          step="0.1"
-          value={rate}
-          onChange={change}
-          className={styles.slider}
-        />
-        <label htmlFor="rate" className={styles.label}>
-          PWM
-        </label> */}
-
         <input
           type="range"
           id="gain"

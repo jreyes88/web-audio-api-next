@@ -1,6 +1,7 @@
 "use client";
 import OSC from "./components/OSC/OSC";
 import Keyboard from "./components/Keyboard";
+import Filter from "./components/Filter";
 import styles from "./page.module.scss";
 
 export default function Home() {
@@ -11,6 +12,7 @@ export default function Home() {
       </header>
       <div className={styles.synth}>
         <OSC />
+        <Filter />
         <Keyboard />
       </div>
     </div>
