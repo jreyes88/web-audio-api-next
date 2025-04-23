@@ -6,7 +6,7 @@ import { CTX } from "../context/Store";
 export default function Osc1() {
   const [state, dispatch] = useContext(CTX);
 
-  const { detune, type } = state.osc1Settings;
+  const { detune, type } = state.oscillatorSettings;
 
   const change = (e) => {
     let { id, value } = e.target;

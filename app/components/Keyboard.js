@@ -5,6 +5,7 @@ import { CTX } from "../context/Store";
 import QwertyHancock from "qwerty-hancock";
 import styles from "./Keyboard.module.scss";
 import Oscillator from "../context/Oscillator";
+import Gain from "../context/Gain";
 
 export default function Keyboard() {
   const [state, dispatch] = useContext(CTX);
@@ -18,37 +19,42 @@ export default function Keyboard() {
       startNote: "C4",
       activeColour: "#6495ed",
     });
-    keyboard.keyDown = (note, freq) => {
+    keyboard.keyDown = (note, frequency) => {
       const audioContext = new window.AudioContext();
       const gain = audioContext.createGain();
       const filter = audioContext.createBiquadFilter();
       const out = audioContext.destination;
-      const osc1 = new Oscillator(
+
+      // Create gain for oscillator
+      const oscillatorGain = new Gain(audioContext, 0.1, gain);
+
+      // Create basic oscillator
+      const oscillator = new Oscillator(
         audioContext,
-        state.osc1Settings.type,
-        freq,
-        state.osc1Settings.detune,
-        state.envelopeSettings,
-        state.lfoSettings,
-        gain
+        state.oscillatorSettings.type,
+        frequency,
+        state.oscillatorSettings.detune,
+        oscillatorGain.gain
       );
+
       gain.connect(filter);
       filter.connect(out);
 
       dispatch({
         type: "MAKE_OSCILLATOR",
         payload: {
-          osc1,
+          audioContext,
+          oscillator,
           filter,
         },
       });
     };
-    keyboard.keyUp = (note, freq) => {
+    keyboard.keyUp = (note, frequency) => {
       dispatch({
         type: "KILL_OSCILLATOR",
         payload: {
           note,
-          freq,
+          frequency,
         },
       });
     };

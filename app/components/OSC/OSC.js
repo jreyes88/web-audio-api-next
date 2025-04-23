@@ -8,7 +8,7 @@ export default function OSC() {
   const [state, dispatch] = useContext(CTX);
   const { gain, noise } = state.lfoSettings;
 
-  const { type } = state.osc1Settings;
+  const { type } = state.oscillatorSettings;
 
   const changeType = (e) => {
     let { id, value } = e.target;

@@ -1,5 +1,4 @@
 "use client";
-import Oscillator from "./Oscillator";
 
 import { createContext, useReducer } from "react";
 
@@ -12,8 +11,8 @@ let nodes = [];
 const initialState = {
   windowWidth: 0,
   filter: null,
-  osc1: null,
-  osc1Settings: {
+  oscillator: null,
+  oscillatorSettings: {
     detune: 0,
     type: "sine",
   },
@@ -46,7 +45,7 @@ const reducer = (state, action) => {
     state.filter["gain"].value = state.filterSettings.gain;
     state.filter.type = state.filterSettings.type;
   }
-  const { id, value, freq } = action.payload || {};
+  const { id, value, frequency } = action.payload || {};
   switch (action.type) {
     case "SET_WINDOW_WIDTH": {
       return {
@@ -55,10 +54,36 @@ const reducer = (state, action) => {
       };
     }
     case "MAKE_OSCILLATOR": {
-      const { osc1, filter } = action.payload;
+      const { audioContext, oscillator, filter } = action.payload;
+
+      // Create LFO
+      const lfo = audioContext.createOscillator();
+      lfo.frequency.value = state.lfoSettings.rate;
+
+      // Create gain for LFO
+      const lfoGain = audioContext.createGain();
+
+      lfo.connect(lfoGain);
+      lfoGain.connect(oscillator.oscillator.detune);
+      lfo.start();
+
+      let { currentTime } = audioContext;
+      let easing = 0.005;
+
+      lfoGain.gain.cancelScheduledValues(currentTime);
+      lfoGain.gain.setValueAtTime(0, currentTime + easing);
+      lfoGain.gain.linearRampToValueAtTime(
+        state.lfoSettings.gain,
+        currentTime + state.lfoSettings.delay + easing
+      );
+
+      state.audioContext = audioContext;
       state.filter = filter;
-      state.osc1 = osc1;
-      nodes.push(osc1);
+      state.oscillator = oscillator.oscillator;
+      state.lfo = lfo;
+      state.lfoGain = lfoGain;
+
+      nodes.push(oscillator);
       return {
         ...state,
       };
@@ -67,29 +92,48 @@ const reducer = (state, action) => {
       // can probably spread and slice this
       let newNodes = [];
       nodes.forEach((node) => {
-        if (Math.round(node.oscillator.frequency.value) === Math.round(freq)) {
-          node.stop();
+        if (
+          Math.round(node.oscillator.frequency.value) === Math.round(frequency)
+        ) {
+          node.oscillator.stop();
         } else {
           newNodes.push(node);
         }
       });
+      if (state.oscillator) {
+        state.oscillator = null;
+      }
+      if (state.lfo) {
+        state.lfo = null;
+      }
+      if (state.lfoGain) {
+        state.lfoGain = null;
+      }
       return {
         ...state,
       };
     }
     case "CHANGE_OSCILLATOR_TYPE": {
-      if (state.osc1.oscillator) {
-        state.osc1.oscillator[id] = value;
+      if (state.oscillator) {
+        state.oscillator[id] = value;
       }
       return {
         ...state,
-        osc1Settings: {
-          ...state.osc1Settings,
+        oscillatorSettings: {
+          ...state.oscillatorSettings,
           [id]: value,
         },
       };
     }
     case "CHANGE_LFO": {
+      if (id === "rate") {
+        if (state.lfo) {
+          state.lfo.frequency.setValueAtTime(
+            value,
+            state.audioContext.currentTime
+          );
+        }
+      }
       return {
         ...state,
         lfoSettings: {
