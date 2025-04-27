@@ -11,7 +11,7 @@ export default function OSC() {
   const { type } = state.oscillatorSettings;
 
   const changeType = (e) => {
-    let { id, value } = e.target;
+    let { name: id, value } = e.target;
     dispatch({
       type: "CHANGE_OSCILLATOR_TYPE",
       payload: {
@@ -37,12 +37,42 @@ export default function OSC() {
       <h2 className="">Waveform</h2>
       <div className="param">
         <label htmlFor="type">Wave (Type)</label>
-        <select id="type" onChange={changeType} value={type}>
-          <option value="sine">Sine</option>
-          <option value="square">Square</option>
-          <option value="sawtooth">Sawtooth</option>
-          <option value="triangle">Triangle</option>
-        </select>
+        <input
+          type="radio"
+          name="type"
+          id="wave-type-sine"
+          value="sine"
+          checked={type === "sine"}
+          onChange={changeType}
+        />
+        <label htmlFor="wave-type-sine">Sine</label>
+        <input
+          type="radio"
+          name="type"
+          id="wave-type-square"
+          value="square"
+          checked={type === "square"}
+          onChange={changeType}
+        />
+        <label htmlFor="wave-type-sine">Square</label>
+        <input
+          type="radio"
+          name="type"
+          id="wave-type-sawtooth"
+          value="sawtooth"
+          checked={type === "sawtooth"}
+          onChange={changeType}
+        />
+        <label htmlFor="wave-type-sine">Sawtooth</label>
+        <input
+          type="radio"
+          name="type"
+          id="wave-type-triangle"
+          value="triangle"
+          checked={type === "triangle"}
+          onChange={changeType}
+        />
+        <label htmlFor="wave-type-sine">Triangle</label>
       </div>
       <div className="">
         <input
@@ -56,7 +86,7 @@ export default function OSC() {
           className={styles.slider}
         />
         <label htmlFor="noise" className={styles.label}>
-          Noise
+          Noise {noise}
         </label>
         <input
           type="range"

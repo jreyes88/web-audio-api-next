@@ -4,12 +4,11 @@ import { useContext, useEffect } from "react";
 import { CTX } from "../context/Store";
 import QwertyHancock from "qwerty-hancock";
 import styles from "./Keyboard.module.scss";
-import Oscillator from "../context/Oscillator";
-import Gain from "../context/Gain";
 
 export default function Keyboard() {
   const [state, dispatch] = useContext(CTX);
 
+  // Keyboard cannot use state! It should just dispatch events from Context. Context can use state.
   useEffect(() => {
     const keyboard = new QwertyHancock({
       id: "keyboard",
@@ -21,31 +20,12 @@ export default function Keyboard() {
     });
     keyboard.keyDown = (note, frequency) => {
       const audioContext = new window.AudioContext();
-      const gain = audioContext.createGain();
-      const filter = audioContext.createBiquadFilter();
-      const out = audioContext.destination;
-
-      // Create gain for oscillator
-      const oscillatorGain = new Gain(audioContext, 0.1, gain);
-
-      // Create basic oscillator
-      const oscillator = new Oscillator(
-        audioContext,
-        state.oscillatorSettings.type,
-        frequency,
-        state.oscillatorSettings.detune,
-        oscillatorGain.gain
-      );
-
-      gain.connect(filter);
-      filter.connect(out);
 
       dispatch({
-        type: "MAKE_OSCILLATOR",
+        type: "CREATE_OSCILLATOR",
         payload: {
           audioContext,
-          oscillator,
-          filter,
+          frequency,
         },
       });
     };
