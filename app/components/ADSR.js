@@ -17,7 +17,7 @@ export default function ADSR() {
   };
   return (
     <div className="control">
-      <h2>ADSR</h2>
+      <h2>Volume Filter</h2>
       <div className="param">
         <h3>Attack</h3>
         <input

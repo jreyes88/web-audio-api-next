@@ -16,15 +16,23 @@ const initialState = {
   filter: null,
   oscillator: null,
   oscillatorGain: null,
-  oscillatorSettings: {
+  oscillatorSettings1: {
+    detune: 0,
+    type: "sine",
+  },
+  oscillatorSettings2: {
+    detune: 0,
+    type: "sine",
+  },
+  oscillatorSettings3: {
     detune: 0,
     type: "sine",
   },
   lfoSettings: {
-    rate: 1, // Rate slider
-    delay: 0, // Delay Slider
-    gain: 100, // LFO Knob
-    noise: 1, // Noise knob
+    rate: 11.7, // Rate slider
+    delay: 1.4, // Delay Slider
+    gain: 2.8, // LFO Knob
+    noise: 0.31, // Noise knob
   },
   envelopeSettings: {
     attack: 0.005,
@@ -44,13 +52,6 @@ const initialState = {
 };
 
 const reducer = (state, action) => {
-  if (state.filter) {
-    state.filter["frequency"].value = state.filterSettings.frequency;
-    state.filter["detune"].value = state.filterSettings.detune;
-    state.filter["Q"].value = state.filterSettings.Q;
-    state.filter["gain"].value = state.filterSettings.gain;
-    state.filter.type = state.filterSettings.type;
-  }
   const { id, value, frequency } = action.payload || {};
   switch (action.type) {
     case "SET_WINDOW_WIDTH": {
@@ -72,9 +73,9 @@ const reducer = (state, action) => {
       // Create basic oscillator
       const oscillator = new Oscillator(
         audioContext,
-        state.oscillatorSettings.type,
+        state.oscillatorSettings1.type,
         frequency,
-        state.oscillatorSettings.detune,
+        state.oscillatorSettings1.detune,
         oscillatorGain.gain
       );
 
@@ -102,8 +103,6 @@ const reducer = (state, action) => {
       );
 
       oscillator.start(state.lfoSettings, state.envelopeSettings, state.easing);
-
-      console.log(oscillator);
 
       nodes.push(oscillator);
 
@@ -147,8 +146,8 @@ const reducer = (state, action) => {
       }
       return {
         ...state,
-        oscillatorSettings: {
-          ...state.oscillatorSettings,
+        oscillatorSettings1: {
+          ...state.oscillatorSettings1,
           [id]: value,
         },
       };

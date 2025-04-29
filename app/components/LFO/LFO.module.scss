@@ -1,28 +1,7 @@
-.LFO {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.title {
-  grid-column: 1 / -1;
-  text-align: center;
-}
-
-.sliderContainer {
-  display: flex;
-  flex-direction: column;
-  height: 200px;
-}
-
 .slider {
-  transform: rotate(270deg);
-  flex: 4;
+  background: white;
 }
 
-.label {
-  text-align: center;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.slider::-webkit-slider-thumb {
+  background: black;
 }

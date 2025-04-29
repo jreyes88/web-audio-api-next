@@ -5,8 +5,20 @@ import styles from "./LFO.module.scss";
 
 export default function LFO() {
   const [state, dispatch] = useContext(CTX);
-  const { rate, delay } = state.lfoSettings;
+  const { gain, rate, delay } = state.lfoSettings;
+
   const change = (e) => {
+    let { id, value } = e.target;
+    dispatch({
+      type: "CHANGE_LFO",
+      payload: {
+        id,
+        value,
+      },
+    });
+  };
+
+  const changeLFOGain = (e) => {
     let { id, value } = e.target;
     dispatch({
       type: "CHANGE_LFO",
@@ -19,6 +31,19 @@ export default function LFO() {
   return (
     <div className={styles.LFO}>
       <h2 className={styles.title}>LFO</h2>
+      <input
+        type="range"
+        id="gain"
+        max="15"
+        min="0.1"
+        step="0.1"
+        value={gain}
+        onChange={change}
+        className={styles.slider}
+      />
+      <label htmlFor="gain" className={styles.label}>
+        Gain {gain}
+      </label>
       <div className={styles.sliderContainer}>
         <input
           type="range"
@@ -31,7 +56,7 @@ export default function LFO() {
           className={styles.slider}
         />
         <label htmlFor="rate" className={styles.label}>
-          Rate
+          Rate {rate}
         </label>
       </div>
 
@@ -47,7 +72,7 @@ export default function LFO() {
           className={styles.slider}
         />
         <label htmlFor="delay" className={styles.label}>
-          Delay
+          Delay {delay}
         </label>
       </div>
     </div>
