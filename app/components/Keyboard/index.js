@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useEffect } from "react";
-import { CTX } from "../context/Store";
+import { CTX } from "../../context/Store";
 import QwertyHancock from "qwerty-hancock";
 import styles from "./Keyboard.module.scss";
 
@@ -9,32 +9,6 @@ export default function Keyboard() {
   const [state, dispatch] = useContext(CTX);
 
   // Keyboard cannot use state! It should just dispatch events from Context. Context can use state.
-
-  function rangeToFrequency(baseFrequency, range) {
-    let frequency = baseFrequency;
-
-    switch (range) {
-      case "2":
-        frequency = baseFrequency * 4;
-        break;
-      case "4":
-        frequency = baseFrequency * 2;
-        break;
-      case "16":
-        frequency = baseFrequency / 2;
-        break;
-      case "32":
-        frequency = baseFrequency / 4;
-        break;
-      case "64":
-        frequency = baseFrequency / 8;
-        break;
-      default:
-        break;
-    }
-
-    return frequency;
-  }
   useEffect(() => {
     const keyboard = new QwertyHancock({
       id: "keyboard",
@@ -47,23 +21,20 @@ export default function Keyboard() {
     keyboard.keyDown = (note, frequency) => {
       const audioContext = new window.AudioContext();
 
-      const rangeFrequency = rangeToFrequency(frequency, "16");
-
       dispatch({
         type: "CREATE_OSCILLATOR",
         payload: {
           audioContext,
-          frequency: rangeFrequency,
+          frequency,
         },
       });
     };
     keyboard.keyUp = (note, frequency) => {
-      const rangeFrequency = rangeToFrequency(frequency, "16");
       dispatch({
         type: "KILL_OSCILLATOR",
         payload: {
           note,
-          frequency: rangeFrequency,
+          frequency,
         },
       });
     };

@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext } from "react";
-import { CTX } from "../context/Store";
+import { CTX } from "../../context/Store";
 
 export default function Filter() {
   const [state, dispatch] = useContext(CTX);

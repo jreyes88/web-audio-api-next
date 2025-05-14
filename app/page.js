@@ -1,6 +1,7 @@
 "use client";
-import LFO from "./components/LFO/LFO";
-import Oscillator from "./components/Oscillator/Oscillator";
+import LFO from "./components/LFO";
+import Oscillator from "./components/Oscillator";
+import Volume from "./components/Volume";
 import ADSR from "./components/ADSR";
 import Keyboard from "./components/Keyboard";
 import Filter from "./components/Filter";
@@ -16,9 +17,10 @@ export default function Home() {
         <Oscillator version={1} />
         <Oscillator version={2} />
         <Oscillator version={3} />
-        <LFO />
-        <Filter />
-        <ADSR />
+        <Volume />
+        {/* <LFO /> */}
+        {/* <Filter /> */}
+        {/* <ADSR /> */}
         <Keyboard />
       </div>
     </div>

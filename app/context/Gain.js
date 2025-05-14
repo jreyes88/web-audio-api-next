@@ -4,7 +4,7 @@ export default class Gain {
 
     // Create gain
     this.gain = audioContext.createGain();
-    this.gain.value = value;
+    this.gain.gain.value = value;
     this.gain.connect(connection);
   }
 }
