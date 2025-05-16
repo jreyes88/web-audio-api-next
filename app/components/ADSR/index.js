@@ -19,7 +19,7 @@ export default function ADSR() {
     <div className="control">
       <h2>Volume Filter</h2>
       <div className="param">
-        <h3>Attack</h3>
+        <h3>Attack {attack}</h3>
         <input
           type="range"
           id="attack"
@@ -29,7 +29,7 @@ export default function ADSR() {
           value={attack}
         />
 
-        <h3>Decay</h3>
+        <h3>Decay ={decay}</h3>
         <input
           type="range"
           id="decay"
@@ -39,7 +39,7 @@ export default function ADSR() {
           value={decay}
         />
 
-        <h3>Sustain</h3>
+        <h3>Sustain {sustain}</h3>
         <input
           type="range"
           id="sustain"
@@ -49,7 +49,7 @@ export default function ADSR() {
           value={sustain}
         />
 
-        <h3>Release</h3>
+        <h3>Release {release}</h3>
         <input
           type="range"
           id="release"

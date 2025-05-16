@@ -12,18 +12,18 @@ export default class Oscillator {
     this.oscillator.connect(connection);
 
     // Create an empty buffer
-    const bufferSize = this.audioContext.sampleRate * 0.1;
-    let noiseBuffer = this.audioContext.createBuffer(
-      1,
-      bufferSize,
-      this.audioContext.sampleRate
-    );
+    // const bufferSize = this.audioContext.sampleRate * 0.1;
+    // let noiseBuffer = this.audioContext.createBuffer(
+    //   1,
+    //   bufferSize,
+    //   this.audioContext.sampleRate
+    // );
 
-    // Fill the buffer with noise
-    const output = noiseBuffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      output[i] = Math.random() * 2 - 1;
-    }
+    // // Fill the buffer with noise
+    // const output = noiseBuffer.getChannelData(0);
+    // for (let i = 0; i < bufferSize; i++) {
+    //   output[i] = Math.random() * 2 - 1;
+    // }
 
     // const whiteNoise = this.audioContext.createBufferSource();
     // this.whiteNoise = whiteNoise;
@@ -36,7 +36,7 @@ export default class Oscillator {
     // this.whiteNoiseGain.connect(connection);
   }
 
-  start(lfoSettings, envelopeSettings, easing) {
+  start() {
     const { currentTime } = this.audioContext;
     this.oscillator.start();
 
@@ -49,7 +49,7 @@ export default class Oscillator {
   }
   stop(envelopeSettings, easing) {
     const { currentTime } = this.audioContext;
-    this.oscillator.stop();
+    // this.oscillator.stop();
     // this.whiteNoiseGain.gain.setTargetAtTime(
     //   0,
     //   currentTime,
@@ -58,6 +58,6 @@ export default class Oscillator {
     setTimeout(() => {
       this.oscillator.disconnect();
       // this.whiteNoise.disconnect();
-    }, 10000);
+    }, envelopeSettings.release + easing);
   }
 }

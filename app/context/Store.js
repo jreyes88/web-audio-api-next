@@ -9,6 +9,7 @@ const CTX = createContext();
 export { CTX };
 
 let nodes = [];
+let gains = [];
 
 const initialState = {
   easing: 0.005,
@@ -49,12 +50,12 @@ const initialState = {
   //   gain: 2.8, // LFO Knob
   //   noise: 0.31, // Noise knob
   // },
-  // envelopeSettings: {
-  //   attack: 0.005,
-  //   decay: 0.1,
-  //   sustain: 0.6,
-  //   release: 0.1,
-  // },
+  envelopeSettings: {
+    attack: 0.005,
+    decay: 0.1,
+    sustain: 0.6,
+    release: 0.1,
+  },
   // filterSettings: {
   //   frequency: 350,
   //   detune: 0,
@@ -190,6 +191,20 @@ const reducer = (state, action) => {
       // lfo.start();
 
       let { currentTime } = audioContext;
+      // console.log(gain);
+      gain.gain.cancelScheduledValues(currentTime);
+      gain.gain.setValueAtTime(0, currentTime + state.easing);
+      gain.gain.linearRampToValueAtTime(
+        state.gainSettings.volume,
+        currentTime + state.envelopeSettings.attack + state.easing
+      );
+      // gain.gain.linearRampToValueAtTime(
+      //   state.envelopeSettings.sustain,
+      //   currentTime +
+      //     state.envelopeSettings.attack +
+      //     state.envelopeSettings.decay +
+      //     state.easing
+      // );
 
       // lfoGain.gain.cancelScheduledValues(currentTime);
       // lfoGain.gain.setValueAtTime(0, currentTime + state.easing);
@@ -198,23 +213,26 @@ const reducer = (state, action) => {
       //   currentTime + state.lfoSettings.delay + state.easing
       // );
 
-      oscillator1.start(
-        state.lfoSettings,
-        state.envelopeSettings,
-        state.easing
-      );
+      oscillator1
+        .start
+        // state.lfoSettings,
+        // state.envelopeSettings,
+        // state.easing
+        ();
 
-      oscillator2.start(
-        state.lfoSettings,
-        state.envelopeSettings,
-        state.easing
-      );
+      oscillator2
+        .start
+        // state.lfoSettings,
+        // state.envelopeSettings,
+        // state.easing
+        ();
 
-      oscillator3.start(
-        state.lfoSettings,
-        state.envelopeSettings,
-        state.easing
-      );
+      oscillator3
+        .start
+        // state.lfoSettings,
+        // state.envelopeSettings,
+        // state.easing
+        ();
 
       nodes.push(oscillator1);
       nodes.push(oscillator2);
@@ -223,7 +241,11 @@ const reducer = (state, action) => {
       // Put running audioContext, filter, oscillator, lfo, and lfoGain into state so we can adjust them while a note is playing
       return {
         ...state,
-        // audioContext,
+        audioContext,
+        gain,
+        oscillator1Gain,
+        oscillator2Gain,
+        oscillator3Gain,
         // filter,
         // oscillator1: oscillator1.oscillator,
         // oscillator1Gain: oscillator1Gain.gain,
@@ -254,6 +276,38 @@ const reducer = (state, action) => {
         state.oscillator3Settings.octave
       );
 
+      // console.log(gains);
+      let { currentTime } = state.audioContext;
+      // const { gain } = state;
+      // console.log(gain);
+      // gain.gain.cancelScheduledValues(currentTime);
+      // gain.gain.setValueAtTime(0, currentTime + state.easing);
+      // gain.gain.linearRampToValueAtTime(
+      //   0,
+      //   currentTime + state.envelopeSettings.release + state.easing
+      // );
+
+      console.log(state);
+
+      console.log(nodes);
+      console.log(gains);
+
+      [
+        state.oscillator1Gain,
+        state.oscillator2Gain,
+        state.oscillator3Gain,
+      ].forEach(({ gain }, index) => {
+        console.log(gain);
+        // console.log(state[`oscillator${index + 1}GainSettings`].volume);
+        // const currentVolume =
+        // state[`oscillator${index + 1}GainSettings`].volume;
+        // gain.gain.setValueAtTime(currentVolume, currentTime + state.easing);
+        gain.gain.linearRampToValueAtTime(
+          0,
+          currentTime + state.envelopeSettings.release + state.easing
+        );
+      });
+
       nodes.forEach((node) => {
         if (
           Math.round(node.oscillator.frequency.value) ===
@@ -268,12 +322,11 @@ const reducer = (state, action) => {
           newNodes.push(node);
         }
       });
-
       return {
         ...state,
-        oscillator: null,
-        lfo: null,
-        lfoGain: null,
+        // oscillator: null,
+        // lfo: null,
+        // lfoGain: null,
       };
     }
     case "CHANGE_OSCILLATOR_TYPE": {

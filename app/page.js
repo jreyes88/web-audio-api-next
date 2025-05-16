@@ -20,7 +20,7 @@ export default function Home() {
         <Volume />
         {/* <LFO /> */}
         {/* <Filter /> */}
-        {/* <ADSR /> */}
+        <ADSR />
         <Keyboard />
       </div>
     </div>
