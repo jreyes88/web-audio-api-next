@@ -54,7 +54,7 @@ export default function ADSR() {
           type="range"
           id="release"
           onChange={change}
-          max="2"
+          max="2000"
           step="0.02"
           value={release}
         />

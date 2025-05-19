@@ -3,13 +3,20 @@ export default class Oscillator {
     this.audioContext = audioContext;
 
     // Create basic oscillator
-    this.oscillator = audioContext.createOscillator();
+    this.oscillator = this.audioContext.createOscillator();
     this.oscillator.frequency.value = frequency;
     this.oscillator.type = type;
     this.oscillator.detune.value = detune;
 
-    // Make connection
-    this.oscillator.connect(connection);
+    // Create gate gain
+    this.gateGain = this.audioContext.createGain();
+    this.gateGain.gain.value = 0;
+
+    // Connect oscillator to gate gain
+    this.oscillator.connect(this.gateGain);
+
+    // Connect gate gain to connection
+    this.gateGain.connect(connection);
 
     // Create an empty buffer
     // const bufferSize = this.audioContext.sampleRate * 0.1;
@@ -36,8 +43,16 @@ export default class Oscillator {
     // this.whiteNoiseGain.connect(connection);
   }
 
-  start() {
+  start(envelopeSettings, easing, oscillatorGainSettings) {
     const { currentTime } = this.audioContext;
+
+    this.gateGain.gain.cancelScheduledValues(currentTime);
+    this.gateGain.gain.setValueAtTime(0, currentTime + easing);
+    this.gateGain.gain.linearRampToValueAtTime(
+      oscillatorGainSettings.volume,
+      currentTime + envelopeSettings.attack + easing
+    );
+
     this.oscillator.start();
 
     // this.whiteNoiseGain.gain.cancelScheduledValues(currentTime);
@@ -48,7 +63,21 @@ export default class Oscillator {
     // );
   }
   stop(envelopeSettings, easing) {
+    console.log("hi");
     const { currentTime } = this.audioContext;
+    // this.gateGain.gain.cancelScheduledValues(currentTime);
+    // this.gateGain.gain.setValueAtTime(0, currentTime);
+    // this.gateGain.gain.linearRampToValueAtTime(
+    //   0,
+    //   currentTime + envelopeSettings.release + easing
+    // );
+    // console.log(this.gateGain.gain.value);
+    this.gateGain.gain.value = 0;
+    this.oscillator.stop(1000);
+
+    // gain.gain.gain.cancelScheduledValues(currentTime);
+    // gain.gain.gain.setValueAtTime(0, 2000);
+    // gain.gain.gain.setValue(0.1, currentTime, 2000 + easing);
     // this.oscillator.stop();
     // this.whiteNoiseGain.gain.setTargetAtTime(
     //   0,
@@ -58,6 +87,6 @@ export default class Oscillator {
     setTimeout(() => {
       this.oscillator.disconnect();
       // this.whiteNoise.disconnect();
-    }, envelopeSettings.release + easing);
+    }, 6000);
   }
 }

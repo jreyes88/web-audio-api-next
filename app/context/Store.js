@@ -9,7 +9,6 @@ const CTX = createContext();
 export { CTX };
 
 let nodes = [];
-let gains = [];
 
 const initialState = {
   easing: 0.005,
@@ -34,7 +33,8 @@ const initialState = {
     octave: "4",
   },
   oscillator2GainSettings: {
-    volume: 1,
+    // volume: 1,
+    volume: 0,
   },
   oscillator3Settings: {
     detune: 0,
@@ -42,7 +42,8 @@ const initialState = {
     octave: "16",
   },
   oscillator3GainSettings: {
-    volume: 1,
+    // volume: 1,
+    volume: 0,
   },
   // lfoSettings: {
   //   rate: 11.7, // Rate slider
@@ -51,10 +52,10 @@ const initialState = {
   //   noise: 0.31, // Noise knob
   // },
   envelopeSettings: {
-    attack: 0.005,
+    attack: 1.805,
     decay: 0.1,
     sustain: 0.6,
-    release: 0.1,
+    release: 1.6,
   },
   // filterSettings: {
   //   frequency: 350,
@@ -70,25 +71,25 @@ const initialState = {
 function octaveToFrequency(baseFrequency, octave) {
   let frequency = baseFrequency;
 
-  switch (octave) {
-    case "2":
-      frequency = baseFrequency * 4;
-      break;
-    case "4":
-      frequency = baseFrequency * 2;
-      break;
-    case "16":
-      frequency = baseFrequency / 2;
-      break;
-    case "32":
-      frequency = baseFrequency / 4;
-      break;
-    case "64":
-      frequency = baseFrequency / 8;
-      break;
-    default:
-      break;
-  }
+  // switch (octave) {
+  //   case "2":
+  //     frequency = baseFrequency * 4;
+  //     break;
+  //   case "4":
+  //     frequency = baseFrequency * 2;
+  //     break;
+  //   case "16":
+  //     frequency = baseFrequency / 2;
+  //     break;
+  //   case "32":
+  //     frequency = baseFrequency / 4;
+  //     break;
+  //   case "64":
+  //     frequency = baseFrequency / 8;
+  //     break;
+  //   default:
+  //     break;
+  // }
 
   return frequency;
 }
@@ -107,7 +108,7 @@ const reducer = (state, action) => {
 
       const gain = audioContext.createGain();
       gain.gain.value = state.gainSettings.volume;
-      const filter = audioContext.createBiquadFilter();
+      // const filter = audioContext.createBiquadFilter();
       const out = audioContext.destination;
 
       // Create gain for oscillator 1
@@ -118,18 +119,18 @@ const reducer = (state, action) => {
       );
 
       // Create gain for oscillator 2
-      const oscillator2Gain = new Gain(
-        audioContext,
-        state.oscillator2GainSettings.volume,
-        gain
-      );
+      // const oscillator2Gain = new Gain(
+      //   audioContext,
+      //   state.oscillator2GainSettings.volume,
+      //   gain.gain
+      // );
 
       // Create gain for oscillator 3
-      const oscillator3Gain = new Gain(
-        audioContext,
-        state.oscillator3GainSettings.volume,
-        gain
-      );
+      // const oscillator3Gain = new Gain(
+      //   audioContext,
+      //   state.oscillator3GainSettings.volume,
+      //   gain.gain
+      // );
 
       // Calculate octave 1 frequency
       const octave1Frequency = octaveToFrequency(
@@ -138,16 +139,16 @@ const reducer = (state, action) => {
       );
 
       // Calculate octave 2 frequency
-      const octave2Frequency = octaveToFrequency(
-        frequency,
-        state.oscillator2Settings.octave
-      );
+      // const octave2Frequency = octaveToFrequency(
+      //   frequency,
+      //   state.oscillator2Settings.octave
+      // );
 
-      // Calculate octave 3 frequency
-      const octave3Frequency = octaveToFrequency(
-        frequency,
-        state.oscillator3Settings.octave
-      );
+      // // Calculate octave 3 frequency
+      // const octave3Frequency = octaveToFrequency(
+      //   frequency,
+      //   state.oscillator3Settings.octave
+      // );
 
       // Create basic oscillator 1
       const oscillator1 = new Oscillator(
@@ -155,29 +156,30 @@ const reducer = (state, action) => {
         state.oscillator1Settings.type,
         octave1Frequency,
         state.oscillator1Settings.detune,
-        oscillator1Gain.gain
+        gain
       );
 
       // Create basic oscillator 2
-      const oscillator2 = new Oscillator(
-        audioContext,
-        state.oscillator2Settings.type,
-        octave2Frequency,
-        state.oscillator2Settings.detune,
-        oscillator2Gain.gain
-      );
+      // const oscillator2 = new Oscillator(
+      //   audioContext,
+      //   state.oscillator2Settings.type,
+      //   octave2Frequency,
+      //   state.oscillator2Settings.detune,
+      //   oscillator2Gain.gain
+      // );
 
       // Create basic oscillator 3
-      const oscillator3 = new Oscillator(
-        audioContext,
-        state.oscillator3Settings.type,
-        octave3Frequency,
-        state.oscillator3Settings.detune,
-        oscillator3Gain.gain
-      );
+      // const oscillator3 = new Oscillator(
+      //   audioContext,
+      //   state.oscillator3Settings.type,
+      //   octave3Frequency,
+      //   state.oscillator3Settings.detune,
+      //   oscillator3Gain.gain
+      // );
 
-      gain.connect(filter);
-      filter.connect(out);
+      // gain.connect(filter);
+      // filter.connect(out);
+      gain.connect(out);
 
       // Create LFO
       // const lfo = audioContext.createOscillator();
@@ -191,13 +193,12 @@ const reducer = (state, action) => {
       // lfo.start();
 
       let { currentTime } = audioContext;
-      // console.log(gain);
-      gain.gain.cancelScheduledValues(currentTime);
-      gain.gain.setValueAtTime(0, currentTime + state.easing);
-      gain.gain.linearRampToValueAtTime(
-        state.gainSettings.volume,
-        currentTime + state.envelopeSettings.attack + state.easing
-      );
+      // gain.gain.cancelScheduledValues(currentTime);
+      // gain.gain.setValueAtTime(0, currentTime + state.easing);
+      // gain.gain.linearRampToValueAtTime(
+      //   state.gainSettings.volume,
+      //   currentTime + state.envelopeSettings.attack + state.easing
+      // );
       // gain.gain.linearRampToValueAtTime(
       //   state.envelopeSettings.sustain,
       //   currentTime +
@@ -213,39 +214,39 @@ const reducer = (state, action) => {
       //   currentTime + state.lfoSettings.delay + state.easing
       // );
 
-      oscillator1
-        .start
+      oscillator1.start(
         // state.lfoSettings,
-        // state.envelopeSettings,
-        // state.easing
-        ();
+        state.envelopeSettings,
+        state.easing,
+        state.oscillator1GainSettings
+      );
 
-      oscillator2
-        .start
-        // state.lfoSettings,
-        // state.envelopeSettings,
-        // state.easing
-        ();
+      // oscillator2
+      //   .start
+      //   // state.lfoSettings,
+      //   // state.envelopeSettings,
+      //   // state.easing
+      //   ();
 
-      oscillator3
-        .start
-        // state.lfoSettings,
-        // state.envelopeSettings,
-        // state.easing
-        ();
+      // oscillator3
+      //   .start
+      //   // state.lfoSettings,
+      //   // state.envelopeSettings,
+      //   // state.easing
+      //   ();
 
       nodes.push(oscillator1);
-      nodes.push(oscillator2);
-      nodes.push(oscillator3);
+      // nodes.push({ oscillator: oscillator2, gain: oscillator2Gain });
+      // nodes.push({ oscillator: oscillator3, gain: oscillator3Gain });
 
       // Put running audioContext, filter, oscillator, lfo, and lfoGain into state so we can adjust them while a note is playing
       return {
         ...state,
         audioContext,
         gain,
-        oscillator1Gain,
-        oscillator2Gain,
-        oscillator3Gain,
+        // oscillator1Gain,
+        // oscillator2Gain,
+        // oscillator3Gain,
         // filter,
         // oscillator1: oscillator1.oscillator,
         // oscillator1Gain: oscillator1Gain.gain,
@@ -265,63 +266,40 @@ const reducer = (state, action) => {
         state.oscillator1Settings.octave
       );
 
-      const octave2Frequency = octaveToFrequency(
-        frequency,
-        state.oscillator2Settings.octave
-      );
-
-      // Calculate octave 3 frequency
-      const octave3Frequency = octaveToFrequency(
-        frequency,
-        state.oscillator3Settings.octave
-      );
-
-      // console.log(gains);
-      let { currentTime } = state.audioContext;
-      // const { gain } = state;
-      // console.log(gain);
-      // gain.gain.cancelScheduledValues(currentTime);
-      // gain.gain.setValueAtTime(0, currentTime + state.easing);
-      // gain.gain.linearRampToValueAtTime(
-      //   0,
-      //   currentTime + state.envelopeSettings.release + state.easing
+      // const octave2Frequency = octaveToFrequency(
+      //   frequency,
+      //   state.oscillator2Settings.octave
       // );
 
-      console.log(state);
+      // // Calculate octave 3 frequency
+      // const octave3Frequency = octaveToFrequency(
+      //   frequency,
+      //   state.oscillator3Settings.octave
+      // );
 
-      console.log(nodes);
-      console.log(gains);
-
-      [
-        state.oscillator1Gain,
-        state.oscillator2Gain,
-        state.oscillator3Gain,
-      ].forEach(({ gain }, index) => {
-        console.log(gain);
-        // console.log(state[`oscillator${index + 1}GainSettings`].volume);
-        // const currentVolume =
-        // state[`oscillator${index + 1}GainSettings`].volume;
-        // gain.gain.setValueAtTime(currentVolume, currentTime + state.easing);
-        gain.gain.linearRampToValueAtTime(
-          0,
-          currentTime + state.envelopeSettings.release + state.easing
-        );
-      });
+      let { currentTime } = state.audioContext;
 
       nodes.forEach((node) => {
         if (
           Math.round(node.oscillator.frequency.value) ===
-            Math.round(octave1Frequency) ||
-          Math.round(node.oscillator.frequency.value) ===
-            Math.round(octave2Frequency) ||
-          Math.round(node.oscillator.frequency.value) ===
-            Math.round(octave3Frequency)
+          Math.round(octave1Frequency)
+          // Math.round(node.oscillator.oscillator.frequency.value) ===
+          //   Math.round(octave1Frequency) ||
+          // Math.round(node.oscillator.oscillator.frequency.value) ===
+          //   Math.round(octave2Frequency) ||
+          // Math.round(node.oscillator.oscillator.frequency.value) ===
+          //   Math.round(octave3Frequency)
         ) {
           node.stop(state.envelopeSettings, state.easing);
         } else {
           newNodes.push(node);
         }
       });
+
+      // const { gain } = state;
+      // gain.gain.cancelScheduledValues(currentTime);
+      // gain.gain.setValueAtTime(0, currentTime, 9000);
+      nodes = newNodes;
       return {
         ...state,
         // oscillator: null,
