@@ -1,28 +1,60 @@
 "use client";
-import LFO from "./components/LFO";
-import Oscillator from "./components/Oscillator";
-import Volume from "./components/Volume";
-import ADSR from "./components/ADSR";
-import Keyboard from "./components/Keyboard";
-import Filter from "./components/Filter";
+
 import styles from "./page.module.scss";
+import { useContext, useEffect } from "react";
+import { CTX } from "./context/Store";
+
+import Frequency from "./components/Frequency";
+import Oscillator from "./components/Oscillator";
 
 export default function Home() {
+  const [state, dispatch] = useContext(CTX);
+
+  useEffect(() => {
+    const audioContext = new window.AudioContext();
+
+    const startButton = document.getElementById("start");
+    startButton.addEventListener("click", () => {
+      dispatch({
+        type: "CREATE_OSCILLATOR",
+        payload: {
+          audioContext,
+        },
+      });
+    });
+
+    const stopButton = document.getElementById("stop");
+    stopButton.addEventListener("click", () => {
+      dispatch({
+        type: "KILL_OSCILLATOR",
+        payload: {
+          audioContext,
+        },
+      });
+    });
+  }, []);
   return (
     <div className={styles.app}>
-      <header className="header">
-        <h1 className={styles.heading}>Web Audio API in React</h1>
-      </header>
-      <div className={styles.synth}>
-        <Oscillator version={1} />
-        <Oscillator version={2} />
-        <Oscillator version={3} />
-        <Volume />
-        {/* <LFO /> */}
-        {/* <Filter /> */}
-        <ADSR />
-        <Keyboard />
-      </div>
+      <h1>Sliders</h1>
+      <button
+        id="start"
+        onClick={(e) => {
+          e.preventDefault();
+        }}
+      >
+        Start oscillator
+      </button>
+
+      <button
+        id="stop"
+        onClick={(e) => {
+          e.preventDefault();
+        }}
+      >
+        Stop oscillator
+      </button>
+      <Frequency />
+      <Oscillator />
     </div>
   );
 }
