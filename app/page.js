@@ -6,6 +6,7 @@ import { CTX } from "./context/Store";
 
 import Frequency from "./components/Frequency";
 import Oscillator from "./components/Oscillator";
+import Filter from "./components/Filter";
 
 export default function Home() {
   const [state, dispatch] = useContext(CTX);
@@ -55,6 +56,7 @@ export default function Home() {
       </button>
       <Frequency />
       <Oscillator />
+      <Filter />
     </div>
   );
 }

@@ -29,6 +29,7 @@ export default function Oscillator() {
 
   return (
     <div className={styles["oscillator"]}>
+      <h2>Oscillator</h2>
       <div className="">
         <input
           type="range"

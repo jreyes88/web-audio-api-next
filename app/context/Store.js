@@ -7,10 +7,18 @@ const CTX = createContext();
 export { CTX };
 
 const initialState = {
-  frequency: "440",
+  frequency: 440,
   oscillator1Settings: {
-    detune: "0",
+    detune: 0,
     type: "square",
+  },
+  filter: null,
+  filterSettings: {
+    frequency: 350,
+    detune: 0,
+    Q: 1,
+    gain: 0,
+    type: "lowpass",
   },
 };
 
@@ -34,12 +42,23 @@ const reducer = (state, action) => {
 
       // Set Oscillator Gain Settings
 
+      // Create Filter
+      let filter = audioContext.createBiquadFilter();
+
+      // Set Filter Settings
+      filter.frequency.value = state.filterSettings.frequency;
+      filter.detune.value = state.filterSettings.detune;
+      filter.Q.value = state.filterSettings.Q;
+      filter.gain.value = state.filterSettings.gain;
+      filter.type = state.filterSettings.type;
+
       // Create destination
       let out = audioContext.destination;
 
       // Create connections
       oscillator1.connect(oscillator1Gain);
-      oscillator1Gain.connect(out);
+      oscillator1Gain.connect(filter);
+      filter.connect(out);
 
       // Start Oscillator
       oscillator1.start();
@@ -48,8 +67,7 @@ const reducer = (state, action) => {
 
       return {
         ...state,
-        oscillator1,
-        oscillator1Gain,
+        filter,
       };
     }
     case "KILL_OSCILLATOR": {
@@ -93,6 +111,32 @@ const reducer = (state, action) => {
         ...state,
         oscillator1Settings: {
           ...state.oscillator1Settings,
+          [id]: value,
+        },
+      };
+    }
+    case "CHANGE_FILTER": {
+      const { id, value } = action.payload;
+      if (state.filter) {
+        state.filter[id].value = value;
+      }
+      return {
+        ...state,
+        filterSettings: {
+          ...state.filterSettings,
+          [id]: value,
+        },
+      };
+    }
+    case "CHANGE_FILTER_TYPE": {
+      const { id, value } = action.payload;
+      if (state.filter) {
+        state.filter[id] = value;
+      }
+      return {
+        ...state,
+        filterSettings: {
+          ...state.filterSettings,
           [id]: value,
         },
       };
