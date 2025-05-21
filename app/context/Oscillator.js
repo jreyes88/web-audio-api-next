@@ -6,7 +6,8 @@ export default class Oscillator {
     detune,
     envelope,
     volume,
-    connection
+    connection,
+    easing
   ) {
     // connection will be the master gain
     this.audioContext = audioContext;
@@ -28,7 +29,7 @@ export default class Oscillator {
     this.gateGain.gain.value = 0;
     this.oscillator.connect(this.gateGain);
     this.gateGain.connect(connection);
-    this.easing = 0.005;
+    this.easing = easing;
     this.oscillator.start();
     this.startOscillatorConstructor();
   }

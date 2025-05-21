@@ -9,6 +9,7 @@ export { CTX };
 
 const initialState = {
   frequency: 440,
+  easing: 0.005,
   masterGainSettings: {
     volume: 1,
   },
@@ -32,6 +33,15 @@ const initialState = {
     sustain: 0.6, // sustain is a volume
     release: 1.1,
   },
+  lfoSettings: {
+    rate: 11.7,
+    delay: 1.4,
+    gain: 0.5,
+    noise: 0.31,
+  },
+  audioContext: null,
+  lfo: null,
+  lfoGain: null,
 };
 
 let nodes = [];
@@ -87,34 +97,58 @@ const reducer = (state, action) => {
         state.oscillator1Settings.detune,
         state.envelopeSettings,
         state.oscillator1Settings.volume,
-        masterGain
+        masterGain,
+        state.easing
       );
 
       // Create Filter
       let filter = audioContext.createBiquadFilter();
 
-      // // Set Filter Settings
+      // Set Filter Settings
       filter.frequency.value = state.filterSettings.frequency;
       filter.detune.value = state.filterSettings.detune;
       filter.Q.value = state.filterSettings.Q;
       filter.gain.value = state.filterSettings.gain;
       filter.type = state.filterSettings.type;
 
+      // Create LFO
+      const lfo = audioContext.createOscillator();
+
+      // Set LFO Settings
+      lfo.frequency.value = state.lfoSettings.rate;
+
+      // Create LFO Gain
+      const lfoGain = audioContext.createGain();
+      lfoGain.gain.cancelScheduledValues(audioContext.currentTime);
+      lfoGain.gain.setValueAtTime(0, audioContext.currentTime + state.easing);
+      lfoGain.gain.linearRampToValueAtTime(
+        state.lfoSettings.gain,
+        audioContext.currentTime + state.lfoSettings.delay + state.easing
+      );
+
+      lfo.start();
+
       // Create destination
       let out = audioContext.destination;
 
-      // // Create connections
+      // Create connections
+      lfo.connect(lfoGain);
+      lfoGain.connect(masterGain);
       masterGain.connect(filter);
       filter.connect(out);
+
       nodes.push(oscillator1);
 
       return {
         ...state,
+        audioContext,
         filter,
+        lfo,
+        lfoGain,
       };
     }
     case "KILL_OSCILLATOR": {
-      const { audioContext, frequency } = action.payload;
+      const { frequency } = action.payload;
       let newNodes = [];
 
       // Calculate Oscillator Octovae Frequency
@@ -134,8 +168,28 @@ const reducer = (state, action) => {
         }
       });
       nodes = newNodes;
+
+      if (state.lfo) {
+        state.lfo.stop();
+        setTimeout(() => {
+          state.lfo.disconnect();
+        }, 10000);
+      }
+      if (state.lfoGain) {
+        state.lfoGain.gain.cancelScheduledValues(
+          state.audioContext.currentTime
+        );
+        state.lfoGain.gain.setTargetAtTime(
+          0,
+          state.audioContext.currentTime,
+          state.envelopeSettings.release + state.easing
+        );
+      }
+
       return {
         ...state,
+        lfo: null,
+        lfoGain: null,
       };
     }
     case "CHANGE_OSCILLATOR": {
@@ -180,6 +234,32 @@ const reducer = (state, action) => {
         ...state,
         oscillator1Settings: {
           ...state.oscillator1Settings,
+          [id]: value,
+        },
+      };
+    }
+    case "CHANGE_LFO": {
+      const { id, value } = action.payload;
+
+      if (state.lfo) {
+        if (id === "rate") {
+          state.lfo.frequency.value = value;
+        }
+      }
+      return {
+        ...state,
+        lfoSettings: {
+          ...state.lfoSettings,
+          [id]: Number(value),
+        },
+      };
+    }
+    case "CHANGE_LFO_VOLUME": {
+      const { id, value } = action.payload;
+      return {
+        ...state,
+        lfoSettings: {
+          ...state.lfoSettings,
           [id]: value,
         },
       };
