@@ -2,6 +2,7 @@
 import { useContext, useEffect } from "react";
 import { CTX } from "../../context/Store";
 import QwertyHancock from "qwerty-hancock";
+import styles from "./Keyboard.module.scss";
 
 export default function Keyboard() {
   const [state, dispatch] = useContext(CTX);
@@ -36,7 +37,7 @@ export default function Keyboard() {
     };
   }, []);
   return (
-    <div className="">
+    <div className={styles["keyboard"]}>
       <div id="keyboard" />
     </div>
   );

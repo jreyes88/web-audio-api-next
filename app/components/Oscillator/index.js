@@ -4,7 +4,7 @@ import styles from "./Oscillator.module.scss";
 import { useContext } from "react";
 import { CTX } from "../../context/Store";
 
-export default function Oscillator() {
+export default function Oscillator({ version }) {
   const [state, dispatch] = useContext(CTX);
   const { detune, type } = state.oscillator1Settings;
 
@@ -28,8 +28,10 @@ export default function Oscillator() {
   };
 
   return (
-    <div className={styles["oscillator"]}>
-      <h2>Oscillator</h2>
+    <div
+      className={`${styles["oscillator"]} ${styles[`oscillator${version}`]}`}
+    >
+      <h2>Oscillator {version}</h2>
       <div className="">
         <input
           type="range"

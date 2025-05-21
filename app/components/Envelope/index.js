@@ -2,6 +2,7 @@
 
 import { useContext } from "react";
 import { CTX } from "../../context/Store";
+import styles from "./Envelope.module.scss";
 
 export default function Envelope() {
   const [state, dispatch] = useContext(CTX);
@@ -17,7 +18,7 @@ export default function Envelope() {
     });
   };
   return (
-    <div className="">
+    <div className={styles["envelope"]}>
       <h2>Envelope</h2>
       <div className="">
         <input

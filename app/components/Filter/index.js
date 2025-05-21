@@ -2,6 +2,7 @@
 
 import { useContext } from "react";
 import { CTX } from "../../context/Store";
+import styles from "./Filter.module.scss";
 
 export default function Filter() {
   const [state, dispatch] = useContext(CTX);
@@ -41,7 +42,7 @@ export default function Filter() {
   }
 
   return (
-    <div>
+    <div className={styles["filter"]}>
       <h2>Filter</h2>
       <div className="">
         <input
