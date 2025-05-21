@@ -13,6 +13,7 @@ const initialState = {
     detune: 0,
     type: "square",
     volume: 1,
+    octave: "32",
   },
   filter: null,
   filterSettings: {
@@ -32,6 +33,32 @@ const initialState = {
 
 let nodes = [];
 
+function octaveToFrequency(baseFrequency, octave) {
+  let frequency = baseFrequency;
+
+  switch (octave) {
+    case "2":
+      frequency = baseFrequency * 4;
+      break;
+    case "4":
+      frequency = baseFrequency * 2;
+      break;
+    case "16":
+      frequency = baseFrequency / 2;
+      break;
+    case "32":
+      frequency = baseFrequency / 4;
+      break;
+    case "64":
+      frequency = baseFrequency / 8;
+      break;
+    default:
+      break;
+  }
+
+  return frequency;
+}
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "CREATE_OSCILLATOR": {
@@ -42,11 +69,17 @@ const reducer = (state, action) => {
 
       // Set Master Gain Settings
 
+      // Calculate Oscillator Octovae Frequency
+      const oscillator1OctaveFrequency = octaveToFrequency(
+        frequency,
+        state.oscillator1Settings.octave
+      );
+
       // Create Oscillator
       const oscillator1 = new Oscillator(
         audioContext,
         state.oscillator1Settings.type,
-        frequency,
+        oscillator1OctaveFrequency,
         state.oscillator1Settings.detune,
         state.envelopeSettings,
         state.oscillator1Settings.volume,
@@ -79,9 +112,17 @@ const reducer = (state, action) => {
     case "KILL_OSCILLATOR": {
       const { audioContext, frequency } = action.payload;
       let newNodes = [];
+
+      // Calculate Oscillator Octovae Frequency
+      const oscillator1OctaveFrequency = octaveToFrequency(
+        frequency,
+        state.oscillator1Settings.octave
+      );
+
       nodes.forEach((node) => {
         if (
-          Math.round(node.oscillator.frequency.value) === Math.round(frequency)
+          Math.round(node.oscillator.frequency.value) ===
+          Math.round(oscillator1OctaveFrequency)
         ) {
           node.stopOscillatorConstructor();
         } else {
@@ -124,6 +165,16 @@ const reducer = (state, action) => {
       nodes.forEach((node) => {
         console.log(node);
       });
+      return {
+        ...state,
+        oscillator1Settings: {
+          ...state.oscillator1Settings,
+          [id]: value,
+        },
+      };
+    }
+    case "CHANGE_OSCILLATOR_OCTAVE": {
+      const { id, value } = action.payload;
       return {
         ...state,
         oscillator1Settings: {
