@@ -11,7 +11,7 @@ export default function Oscillator() {
   const changeDetune = (e) => {
     const { id, value } = e.target;
     dispatch({
-      type: "CHANGE_DETUNE",
+      type: "CHANGE_OSCILLATOR",
       payload: {
         id,
         value,

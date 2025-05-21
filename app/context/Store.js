@@ -79,7 +79,7 @@ const reducer = (state, action) => {
         ...state,
       };
     }
-    case "CHANGE_FREQUENCY": {
+    case "CHANGE_OSCILLATOR_FREQUENCY": {
       const { id, value } = action.payload;
       nodes.forEach((node) => {
         node[id].value = value;
@@ -89,7 +89,7 @@ const reducer = (state, action) => {
         [id]: value,
       };
     }
-    case "CHANGE_DETUNE": {
+    case "CHANGE_OSCILLATOR": {
       const { id, value } = action.payload;
       nodes.forEach((node) => {
         node[id].value = value;
@@ -142,7 +142,7 @@ const reducer = (state, action) => {
       };
     }
     default: {
-      console.error("reducer error: action: ", action);
+      console.error("reducer error. action: ", action);
       return {
         ...state,
       };

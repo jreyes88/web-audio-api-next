@@ -10,7 +10,7 @@ export default function Frequency() {
   const changeFrequency = (e) => {
     const { id, value } = e.target;
     dispatch({
-      type: "CHANGE_FREQUENCY",
+      type: "CHANGE_OSCILLATOR_FREQUENCY",
       payload: {
         id,
         value,

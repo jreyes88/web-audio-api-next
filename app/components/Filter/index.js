@@ -103,7 +103,6 @@ export default function Filter() {
           <option value="lowshelf">Lowshelf</option>
           <option value="highshelf">Highshelf</option>
         </select>
-        <p>{type}</p>
       </div>
     </div>
   );
