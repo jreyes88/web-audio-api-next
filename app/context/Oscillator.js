@@ -1,5 +1,6 @@
 export default class Oscillator {
   constructor(audioContext, type, frequency, detune, envelope, connection) {
+    console.log(envelope);
     // connection will be the master gain
     this.audioContext = audioContext;
     this.envelope = envelope || {

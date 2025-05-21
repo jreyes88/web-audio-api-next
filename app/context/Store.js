@@ -143,6 +143,16 @@ const reducer = (state, action) => {
         },
       };
     }
+    case "CHANGE_ENVELOPE": {
+      const { id, value } = action.payload;
+      return {
+        ...state,
+        envelopeSettings: {
+          ...state.envelopeSettings,
+          [id]: Number(value),
+        },
+      };
+    }
     default: {
       console.error("reducer error. action: ", action);
       return {
