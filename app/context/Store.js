@@ -9,6 +9,9 @@ export { CTX };
 
 const initialState = {
   frequency: 440,
+  masterGainSettings: {
+    volume: 1,
+  },
   oscillator1Settings: {
     detune: 0,
     type: "square",
@@ -66,6 +69,7 @@ const reducer = (state, action) => {
 
       // Create Master Gain
       let masterGain = audioContext.createGain();
+      masterGain.gain.value = state.masterGainSettings.volume;
 
       // Set Master Gain Settings
 
@@ -162,9 +166,6 @@ const reducer = (state, action) => {
     }
     case "CHANGE_OSCILLATOR_VOLUME": {
       const { id, value } = action.payload;
-      nodes.forEach((node) => {
-        console.log(node);
-      });
       return {
         ...state,
         oscillator1Settings: {
@@ -216,6 +217,16 @@ const reducer = (state, action) => {
         envelopeSettings: {
           ...state.envelopeSettings,
           [id]: Number(value),
+        },
+      };
+    }
+    case "CHANGE_MASTER_GAIN_VOLUME": {
+      const { id, value } = action.payload;
+      return {
+        ...state,
+        masterGainSettings: {
+          ...state.masterGainSettings,
+          [id]: value,
         },
       };
     }
