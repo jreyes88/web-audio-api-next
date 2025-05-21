@@ -12,6 +12,7 @@ const initialState = {
   oscillator1Settings: {
     detune: 0,
     type: "square",
+    volume: 1,
   },
   filter: null,
   filterSettings: {
@@ -48,6 +49,7 @@ const reducer = (state, action) => {
         frequency,
         state.oscillator1Settings.detune,
         state.envelopeSettings,
+        state.oscillator1Settings.volume,
         masterGain
       );
 
@@ -108,6 +110,19 @@ const reducer = (state, action) => {
       const { id, value } = action.payload;
       nodes.forEach((node) => {
         node.oscillator[id] = value;
+      });
+      return {
+        ...state,
+        oscillator1Settings: {
+          ...state.oscillator1Settings,
+          [id]: value,
+        },
+      };
+    }
+    case "CHANGE_OSCILLATOR_VOLUME": {
+      const { id, value } = action.payload;
+      nodes.forEach((node) => {
+        console.log(node);
       });
       return {
         ...state,

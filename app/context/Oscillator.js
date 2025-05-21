@@ -1,5 +1,13 @@
 export default class Oscillator {
-  constructor(audioContext, type, frequency, detune, envelope, connection) {
+  constructor(
+    audioContext,
+    type,
+    frequency,
+    detune,
+    envelope,
+    volume,
+    connection
+  ) {
     // connection will be the master gain
     this.audioContext = audioContext;
     this.envelope = envelope || {
@@ -12,6 +20,7 @@ export default class Oscillator {
     this.oscillator.frequency.value = frequency;
     this.oscillator.detune.value = detune;
     this.oscillator.type = type;
+    this.oscillator.volume = volume;
     this.connection = connection;
 
     // we will create a gate gain to handle the ADSR envelope and then connect that to the master gain
@@ -30,7 +39,7 @@ export default class Oscillator {
     this.gateGain.gain.cancelScheduledValues(currentTime);
     this.gateGain.gain.setValueAtTime(0, currentTime + this.easing);
     this.gateGain.gain.linearRampToValueAtTime(
-      1,
+      this.oscillator.volume,
       currentTime + this.envelope.attack + this.easing
     );
     // decay to sustain

@@ -6,7 +6,7 @@ import { CTX } from "../../context/Store";
 
 export default function Oscillator({ version }) {
   const [state, dispatch] = useContext(CTX);
-  const { detune, type } = state.oscillator1Settings;
+  const { detune, type, volume } = state.oscillator1Settings;
 
   const changeDetune = (e) => {
     const { id, value } = e.target;
@@ -24,6 +24,17 @@ export default function Oscillator({ version }) {
     dispatch({
       type: "CHANGE_OSCILLATOR_TYPE",
       payload: { id, value },
+    });
+  };
+
+  const changeVolume = (e) => {
+    let { id, value } = e.target;
+    dispatch({
+      type: "CHANGE_OSCILLATOR_VOLUME",
+      payload: {
+        id,
+        value,
+      },
     });
   };
 
@@ -51,6 +62,17 @@ export default function Oscillator({ version }) {
           <option value="sawtooth">sawtooth</option>
           <option value="triangle">triangle</option>
         </select>
+      </div>
+      <div className="">
+        <input
+          type="range"
+          id="volume"
+          max="2"
+          min="0"
+          step="0.1"
+          onChange={changeVolume}
+        />
+        <label htmlFor="volume">Volume {volume}</label>
       </div>
     </div>
   );
