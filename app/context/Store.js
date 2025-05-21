@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useReducer } from "react";
+import Oscillator from "./Oscillator";
 
 const CTX = createContext();
 
@@ -20,6 +21,12 @@ const initialState = {
     gain: 0,
     type: "lowpass",
   },
+  envelopeSettings: {
+    attack: 0.005,
+    decay: 0.1,
+    sustain: 0.6, // sustain is a volume
+    release: 1.1,
+  },
 };
 
 let nodes = [];
@@ -27,25 +34,27 @@ let nodes = [];
 const reducer = (state, action) => {
   switch (action.type) {
     case "CREATE_OSCILLATOR": {
-      const { audioContext } = action.payload;
+      const { audioContext, frequency } = action.payload;
+
+      // Create Master Gain
+      let masterGain = audioContext.createGain();
+
+      // Set Master Gain Settings
 
       // Create Oscillator
-      let oscillator1 = audioContext.createOscillator();
-
-      // Set Oscillator Settings
-      oscillator1.frequency.value = state.frequency;
-      oscillator1.detune.value = state.oscillator1Settings.detune;
-      oscillator1.type = state.oscillator1Settings.type;
-
-      // Create Oscillator Gain
-      let oscillator1Gain = audioContext.createGain();
-
-      // Set Oscillator Gain Settings
+      const oscillator1 = new Oscillator(
+        audioContext,
+        state.oscillator1Settings.type,
+        frequency,
+        state.oscillator1Settings.detune,
+        state.envelopeSettings,
+        masterGain
+      );
 
       // Create Filter
       let filter = audioContext.createBiquadFilter();
 
-      // Set Filter Settings
+      // // Set Filter Settings
       filter.frequency.value = state.filterSettings.frequency;
       filter.detune.value = state.filterSettings.detune;
       filter.Q.value = state.filterSettings.Q;
@@ -55,14 +64,9 @@ const reducer = (state, action) => {
       // Create destination
       let out = audioContext.destination;
 
-      // Create connections
-      oscillator1.connect(oscillator1Gain);
-      oscillator1Gain.connect(filter);
+      // // Create connections
+      masterGain.connect(filter);
       filter.connect(out);
-
-      // Start Oscillator
-      oscillator1.start();
-
       nodes.push(oscillator1);
 
       return {
@@ -71,28 +75,26 @@ const reducer = (state, action) => {
       };
     }
     case "KILL_OSCILLATOR": {
+      const { audioContext, frequency } = action.payload;
+      let newNodes = [];
       nodes.forEach((node) => {
-        node.stop();
+        if (
+          Math.round(node.oscillator.frequency.value) === Math.round(frequency)
+        ) {
+          node.stopOscillatorConstructor();
+        } else {
+          newNodes.push(node);
+        }
       });
-      nodes = [];
+      nodes = newNodes;
       return {
         ...state,
-      };
-    }
-    case "CHANGE_OSCILLATOR_FREQUENCY": {
-      const { id, value } = action.payload;
-      nodes.forEach((node) => {
-        node[id].value = value;
-      });
-      return {
-        ...state,
-        [id]: value,
       };
     }
     case "CHANGE_OSCILLATOR": {
       const { id, value } = action.payload;
       nodes.forEach((node) => {
-        node[id].value = value;
+        node.oscillator[id].value = value;
       });
       return {
         ...state,
@@ -105,7 +107,7 @@ const reducer = (state, action) => {
     case "CHANGE_OSCILLATOR_TYPE": {
       const { id, value } = action.payload;
       nodes.forEach((node) => {
-        node[id] = value;
+        node.oscillator[id] = value;
       });
       return {
         ...state,
