@@ -1,3 +1,11 @@
 .filter {
   grid-area: filter;
 }
+
+.filter-layout {
+  display: flex;
+  gap: 20px;
+  div {
+    flex: 1;
+  }
+}

@@ -1,5 +1,4 @@
 .oscillator {
-  border: solid 1px black;
 }
 
 .oscillator1 {
@@ -12,4 +11,9 @@
 
 .oscillator3 {
   grid-area: oscillator3;
+}
+
+.selects {
+  display: flex;
+  gap: 24px;
 }

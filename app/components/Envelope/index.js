@@ -21,6 +21,9 @@ export default function Envelope() {
     <div className={styles["envelope"]}>
       <h2>Envelope</h2>
       <div className="">
+        <label htmlFor="attack">
+          Attack <span className="right">{attack}</span>
+        </label>
         <input
           onChange={change}
           type="range"
@@ -30,9 +33,11 @@ export default function Envelope() {
           step="0.1"
           id="attack"
         />
-        <label htmlFor="attack">Attack {attack}</label>
       </div>
       <div className="">
+        <label htmlFor="decay">
+          Decay <span className="right">{decay}</span>
+        </label>
         <input
           onChange={change}
           type="range"
@@ -42,9 +47,11 @@ export default function Envelope() {
           step="0.01"
           id="decay"
         />
-        <label htmlFor="decay">Decay {decay}</label>
       </div>
       <div className="">
+        <label htmlFor="sustain">
+          Sustain <span className="right">{sustain}</span>
+        </label>
         <input
           onChange={change}
           type="range"
@@ -54,9 +61,11 @@ export default function Envelope() {
           step="0.01"
           id="sustain"
         />
-        <label htmlFor="sustain">Sustain {sustain}</label>
       </div>
       <div className="">
+        <label htmlFor="release">
+          Release <span className="right">{release}</span>
+        </label>
         <input
           onChange={change}
           type="range"
@@ -66,7 +75,6 @@ export default function Envelope() {
           step="0.01"
           id="release"
         />
-        <label htmlFor="release">Release {release}</label>
       </div>
     </div>
   );

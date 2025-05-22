@@ -31,6 +31,9 @@ export default function LFO() {
     <div className={styles["lfo"]}>
       <h2>LFO</h2>
       <div className="">
+        <label htmlFor="rate">
+          Rate <span className="right">{rate}</span>
+        </label>
         <input
           type="range"
           id="rate"
@@ -40,9 +43,11 @@ export default function LFO() {
           value={rate}
           onChange={changeLFO}
         />
-        <label htmlFor="rate">Rate {rate}</label>
       </div>
       <div className="">
+        <label htmlFor="delay">
+          Delay <span className="right">{delay}</span>
+        </label>
         <input
           type="range"
           id="delay"
@@ -52,9 +57,11 @@ export default function LFO() {
           value={delay}
           onChange={changeLFO}
         />
-        <label htmlFor="delay">Delay {delay}</label>
       </div>
       <div className="">
+        <label htmlFor="gain">
+          Gain <span className="right">{gain}</span>
+        </label>
         <input
           type="range"
           id="gain"
@@ -64,7 +71,6 @@ export default function LFO() {
           value={gain}
           onChange={changeLFOVolume}
         />
-        <label htmlFor="gain">Gain {gain}</label>
       </div>
     </div>
   );

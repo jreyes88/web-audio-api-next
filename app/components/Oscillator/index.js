@@ -59,11 +59,37 @@ export default function Oscillator({ version }) {
   };
 
   return (
-    <div
-      className={`${styles["oscillator"]} ${styles[`oscillator${version}`]}`}
-    >
+    <div className={`${styles[`oscillator${version}`]}`}>
       <h2>Oscillator {version}</h2>
-      <div className="">
+      <div className={`${styles["selects"]}`}>
+        <div className="select">
+          <label htmlFor={`${uniqueId}-type`}>Wave Type</label>
+          <select id={`${uniqueId}-type`} value={type} onChange={changeType}>
+            <option value="sine">Sine</option>
+            <option value="square">Square</option>
+            <option value="sawtooth">Sawtooth</option>
+            <option value="triangle">Triangle</option>
+          </select>
+        </div>
+        <div className="select">
+          <label htmlFor={`${uniqueId}-octave`}>Octave</label>
+          <select
+            id={`${uniqueId}-octave`}
+            value={octave}
+            onChange={changeOctave}
+          >
+            <option value="32">32</option>
+            <option value="16">16</option>
+            <option value="8">8</option>
+            <option value="4">4</option>
+            <option value="2">2</option>
+          </select>
+        </div>
+      </div>
+      <div className={`${styles["slider"]}`}>
+        <label htmlFor={`${uniqueId}-detune`}>
+          Detune <span className="right">{detune}</span>
+        </label>
         <input
           type="range"
           min="-10"
@@ -72,18 +98,11 @@ export default function Oscillator({ version }) {
           value={detune}
           onChange={changeDetune}
         />
-        <label htmlFor={`${uniqueId}-detune`}>Detune {detune}</label>
       </div>
       <div className="">
-        <label htmlFor={`${uniqueId}-type`}>Wave Type</label>
-        <select id={`${uniqueId}-type`} value={type} onChange={changeType}>
-          <option value="sine">sine</option>
-          <option value="square">square</option>
-          <option value="sawtooth">sawtooth</option>
-          <option value="triangle">triangle</option>
-        </select>
-      </div>
-      <div className="">
+        <label htmlFor={`${uniqueId}-volume`}>
+          Volume <span className="right">{volume}</span>
+        </label>
         <input
           type="range"
           id={`${uniqueId}-volume`}
@@ -92,21 +111,6 @@ export default function Oscillator({ version }) {
           step="0.1"
           onChange={changeVolume}
         />
-        <label htmlFor={`${uniqueId}-volume`}>Volume {volume}</label>
-      </div>
-      <div className="">
-        <label htmlFor={`${uniqueId}-octave`}>Octave</label>
-        <select
-          id={`${uniqueId}-octave`}
-          value={octave}
-          onChange={changeOctave}
-        >
-          <option value="32">32</option>
-          <option value="16">16</option>
-          <option value="8">8</option>
-          <option value="4">4</option>
-          <option value="2">2</option>
-        </select>
       </div>
     </div>
   );
