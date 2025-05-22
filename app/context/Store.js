@@ -17,7 +17,19 @@ const initialState = {
     detune: 0,
     type: "square",
     volume: 1,
-    octave: "32",
+    octave: "8",
+  },
+  oscillator2Settings: {
+    detune: 0,
+    type: "sawtooth",
+    octave: 4,
+    volume: 1,
+  },
+  oscillator3Settings: {
+    detune: 0,
+    type: "triangle",
+    octave: 16,
+    volume: 1,
   },
   filter: null,
   filterSettings: {
@@ -28,15 +40,16 @@ const initialState = {
     type: "lowpass",
   },
   envelopeSettings: {
-    attack: 0.005,
-    decay: 0.1,
-    sustain: 0.6, // sustain is a volume
-    release: 1.1,
+    attack: 0.1,
+    decay: 0.24,
+    sustain: 0.44, // sustain is a volume
+    release: 0.56,
   },
   lfoSettings: {
-    rate: 11.7,
-    delay: 1.4,
-    gain: 0.5,
+    rate: 0.1,
+    delay: 0,
+    gain: 0,
+    // gain: 0.5,
     noise: 0.31,
   },
   audioContext: null,
@@ -73,23 +86,32 @@ function octaveToFrequency(baseFrequency, octave) {
 }
 
 const reducer = (state, action) => {
+  const { audioContext, frequency, id, value, version } = action.payload;
   switch (action.type) {
     case "CREATE_OSCILLATOR": {
-      const { audioContext, frequency } = action.payload;
-
       // Create Master Gain
       let masterGain = audioContext.createGain();
-      masterGain.gain.value = state.masterGainSettings.volume;
 
       // Set Master Gain Settings
+      masterGain.gain.value = state.masterGainSettings.volume;
 
-      // Calculate Oscillator Octovae Frequency
+      // Calculate Oscillator Octave Frequencies
       const oscillator1OctaveFrequency = octaveToFrequency(
         frequency,
         state.oscillator1Settings.octave
       );
 
-      // Create Oscillator
+      const oscillator2OctaveFrequency = octaveToFrequency(
+        frequency,
+        state.oscillator2Settings.octave
+      );
+
+      const oscillator3OctaveFrequency = octaveToFrequency(
+        frequency,
+        state.oscillator3Settings.octave
+      );
+
+      // Create Oscillators
       const oscillator1 = new Oscillator(
         audioContext,
         state.oscillator1Settings.type,
@@ -98,7 +120,32 @@ const reducer = (state, action) => {
         state.envelopeSettings,
         state.oscillator1Settings.volume,
         masterGain,
-        state.easing
+        state.easing,
+        1
+      );
+
+      const oscillator2 = new Oscillator(
+        audioContext,
+        state.oscillator2Settings.type,
+        oscillator2OctaveFrequency,
+        state.oscillator2Settings.detune,
+        state.envelopeSettings,
+        state.oscillator2Settings.volume,
+        masterGain,
+        state.easing,
+        2
+      );
+
+      const oscillator3 = new Oscillator(
+        audioContext,
+        state.oscillator3Settings.type,
+        oscillator3OctaveFrequency,
+        state.oscillator3Settings.detune,
+        state.envelopeSettings,
+        state.oscillator3Settings.volume,
+        masterGain,
+        state.easing,
+        3
       );
 
       // Create Filter
@@ -119,6 +166,8 @@ const reducer = (state, action) => {
 
       // Create LFO Gain
       const lfoGain = audioContext.createGain();
+
+      // Set LFO Gain Settings
       lfoGain.gain.cancelScheduledValues(audioContext.currentTime);
       lfoGain.gain.setValueAtTime(0, audioContext.currentTime + state.easing);
       lfoGain.gain.linearRampToValueAtTime(
@@ -137,7 +186,7 @@ const reducer = (state, action) => {
       masterGain.connect(filter);
       filter.connect(out);
 
-      nodes.push(oscillator1);
+      nodes.push(oscillator1, oscillator2, oscillator3);
 
       return {
         ...state,
@@ -148,19 +197,32 @@ const reducer = (state, action) => {
       };
     }
     case "KILL_OSCILLATOR": {
-      const { frequency } = action.payload;
       let newNodes = [];
 
-      // Calculate Oscillator Octovae Frequency
+      // Calculate Oscillator Octave Frequency
       const oscillator1OctaveFrequency = octaveToFrequency(
         frequency,
         state.oscillator1Settings.octave
       );
 
+      const oscillator2OctaveFrequency = octaveToFrequency(
+        frequency,
+        state.oscillator2Settings.octave
+      );
+
+      const oscillator3OctaveFrequency = octaveToFrequency(
+        frequency,
+        state.oscillator3Settings.octave
+      );
+
       nodes.forEach((node) => {
         if (
           Math.round(node.oscillator.frequency.value) ===
-          Math.round(oscillator1OctaveFrequency)
+            Math.round(oscillator1OctaveFrequency) ||
+          Math.round(node.oscillator.frequency.value) ===
+            Math.round(oscillator2OctaveFrequency) ||
+          Math.round(node.oscillator.frequency.value) ===
+            Math.round(oscillator3OctaveFrequency)
         ) {
           node.stopOscillatorConstructor();
         } else {
@@ -193,54 +255,56 @@ const reducer = (state, action) => {
       };
     }
     case "CHANGE_OSCILLATOR": {
-      const { id, value } = action.payload;
       nodes.forEach((node) => {
-        node.oscillator[id].value = value;
+        if (node.version === version) {
+          node.oscillator[id].value = value;
+        }
       });
+      const propertyName = `oscillator${version}Settings`;
       return {
         ...state,
-        oscillator1Settings: {
-          ...state.oscillator1Settings,
+        [`${propertyName}`]: {
+          ...state[`${propertyName}`],
           [id]: value,
         },
       };
     }
     case "CHANGE_OSCILLATOR_TYPE": {
-      const { id, value } = action.payload;
       nodes.forEach((node) => {
-        node.oscillator[id] = value;
+        if (node.version === version) {
+          node.oscillator[id] = value;
+        }
       });
+      const propertyName = `oscillator${version}Settings`;
       return {
         ...state,
-        oscillator1Settings: {
-          ...state.oscillator1Settings,
+        [`${propertyName}`]: {
+          ...state[`${propertyName}`],
           [id]: value,
         },
       };
     }
     case "CHANGE_OSCILLATOR_VOLUME": {
-      const { id, value } = action.payload;
+      const propertyName = `oscillator${version}Settings`;
       return {
         ...state,
-        oscillator1Settings: {
-          ...state.oscillator1Settings,
+        [`${propertyName}`]: {
+          ...state[`${propertyName}`],
           [id]: value,
         },
       };
     }
     case "CHANGE_OSCILLATOR_OCTAVE": {
-      const { id, value } = action.payload;
+      const propertyName = `oscillator${version}Settings`;
       return {
         ...state,
-        oscillator1Settings: {
-          ...state.oscillator1Settings,
+        [`${propertyName}`]: {
+          ...state[`${propertyName}`],
           [id]: value,
         },
       };
     }
     case "CHANGE_LFO": {
-      const { id, value } = action.payload;
-
       if (state.lfo) {
         if (id === "rate") {
           state.lfo.frequency.value = value;
@@ -255,7 +319,6 @@ const reducer = (state, action) => {
       };
     }
     case "CHANGE_LFO_VOLUME": {
-      const { id, value } = action.payload;
       return {
         ...state,
         lfoSettings: {
@@ -265,7 +328,6 @@ const reducer = (state, action) => {
       };
     }
     case "CHANGE_FILTER": {
-      const { id, value } = action.payload;
       if (state.filter) {
         state.filter[id].value = value;
       }
@@ -278,7 +340,6 @@ const reducer = (state, action) => {
       };
     }
     case "CHANGE_FILTER_TYPE": {
-      const { id, value } = action.payload;
       if (state.filter) {
         state.filter[id] = value;
       }
@@ -291,7 +352,6 @@ const reducer = (state, action) => {
       };
     }
     case "CHANGE_ENVELOPE": {
-      const { id, value } = action.payload;
       return {
         ...state,
         envelopeSettings: {
@@ -301,7 +361,6 @@ const reducer = (state, action) => {
       };
     }
     case "CHANGE_MASTER_GAIN_VOLUME": {
-      const { id, value } = action.payload;
       return {
         ...state,
         masterGainSettings: {

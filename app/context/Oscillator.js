@@ -7,8 +7,10 @@ export default class Oscillator {
     envelope,
     volume,
     connection,
-    easing
+    easing,
+    version
   ) {
+    this.version = version;
     // connection will be the master gain
     this.audioContext = audioContext;
     this.envelope = envelope || {

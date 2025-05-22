@@ -6,7 +6,8 @@ import { CTX } from "../../context/Store";
 
 export default function Oscillator({ version }) {
   const [state, dispatch] = useContext(CTX);
-  const { detune, type, volume, octave } = state.oscillator1Settings;
+  const { detune, type, volume, octave } =
+    state[`oscillator${version}Settings`];
 
   const changeDetune = (e) => {
     const { id, value } = e.target;
@@ -15,6 +16,7 @@ export default function Oscillator({ version }) {
       payload: {
         id,
         value,
+        version,
       },
     });
   };
@@ -23,7 +25,7 @@ export default function Oscillator({ version }) {
     const { id, value } = e.target;
     dispatch({
       type: "CHANGE_OSCILLATOR_TYPE",
-      payload: { id, value },
+      payload: { id, value, version },
     });
   };
 
@@ -34,6 +36,7 @@ export default function Oscillator({ version }) {
       payload: {
         id,
         value,
+        version,
       },
     });
   };
@@ -45,6 +48,7 @@ export default function Oscillator({ version }) {
       payload: {
         id,
         value,
+        version,
       },
     });
   };
