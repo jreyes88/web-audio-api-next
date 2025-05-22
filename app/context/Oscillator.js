@@ -1,92 +1,68 @@
 export default class Oscillator {
-  constructor(audioContext, type, frequency, detune, connection) {
+  constructor(
+    audioContext,
+    type,
+    frequency,
+    detune,
+    envelope,
+    volume,
+    connection,
+    easing,
+    version
+  ) {
+    this.version = version;
+    // connection will be the master gain
     this.audioContext = audioContext;
-
-    // Create basic oscillator
+    this.envelope = envelope || {
+      attack: 0.005,
+      decay: 0.1,
+      sustain: 0.6, // sustain is a volume
+      release: 0.1,
+    };
     this.oscillator = this.audioContext.createOscillator();
     this.oscillator.frequency.value = frequency;
-    this.oscillator.type = type;
     this.oscillator.detune.value = detune;
+    this.oscillator.type = type;
+    this.oscillator.volume = volume;
+    this.connection = connection;
 
-    // Create gate gain
-    this.gateGain = this.audioContext.createGain();
+    // we will create a gate gain to handle the ADSR envelope and then connect that to the master gain
+    this.gateGain = audioContext.createGain();
     this.gateGain.gain.value = 0;
-
-    // Connect oscillator to gate gain
     this.oscillator.connect(this.gateGain);
-
-    // Connect gate gain to connection
     this.gateGain.connect(connection);
-
-    // Create an empty buffer
-    // const bufferSize = this.audioContext.sampleRate * 0.1;
-    // let noiseBuffer = this.audioContext.createBuffer(
-    //   1,
-    //   bufferSize,
-    //   this.audioContext.sampleRate
-    // );
-
-    // // Fill the buffer with noise
-    // const output = noiseBuffer.getChannelData(0);
-    // for (let i = 0; i < bufferSize; i++) {
-    //   output[i] = Math.random() * 2 - 1;
-    // }
-
-    // const whiteNoise = this.audioContext.createBufferSource();
-    // this.whiteNoise = whiteNoise;
-    // this.whiteNoise.buffer = noiseBuffer;
-    // this.whiteNoise.loop = true;
-    // this.whiteNoise.start();
-
-    // this.whiteNoiseGain = this.audioContext.createGain();
-    // this.whiteNoise.connect(this.whiteNoiseGain);
-    // this.whiteNoiseGain.connect(connection);
-  }
-
-  start(envelopeSettings, easing, oscillatorGainSettings) {
-    const { currentTime } = this.audioContext;
-
-    this.gateGain.gain.cancelScheduledValues(currentTime);
-    this.gateGain.gain.setValueAtTime(0, currentTime + easing);
-    this.gateGain.gain.linearRampToValueAtTime(
-      oscillatorGainSettings.volume,
-      currentTime + envelopeSettings.attack + easing
-    );
-
+    this.easing = easing;
     this.oscillator.start();
-
-    // this.whiteNoiseGain.gain.cancelScheduledValues(currentTime);
-    // this.whiteNoiseGain.gain.setValueAtTime(0, currentTime + easing);
-    // this.whiteNoiseGain.gain.linearRampToValueAtTime(
-    //   lfoSettings.noise,
-    //   currentTime + envelopeSettings.attack + easing
-    // );
+    this.startOscillatorConstructor();
   }
-  stop(envelopeSettings, easing) {
-    console.log("hi");
-    const { currentTime } = this.audioContext;
-    // this.gateGain.gain.cancelScheduledValues(currentTime);
-    // this.gateGain.gain.setValueAtTime(0, currentTime);
-    // this.gateGain.gain.linearRampToValueAtTime(
-    //   0,
-    //   currentTime + envelopeSettings.release + easing
-    // );
-    // console.log(this.gateGain.gain.value);
-    this.gateGain.gain.value = 0;
-    this.oscillator.stop(1000);
+  startOscillatorConstructor() {
+    let { currentTime } = this.audioContext;
 
-    // gain.gain.gain.cancelScheduledValues(currentTime);
-    // gain.gain.gain.setValueAtTime(0, 2000);
-    // gain.gain.gain.setValue(0.1, currentTime, 2000 + easing);
-    // this.oscillator.stop();
-    // this.whiteNoiseGain.gain.setTargetAtTime(
-    //   0,
-    //   currentTime,
-    //   envelopeSettings.release + easing
-    // );
+    // attack
+    this.gateGain.gain.cancelScheduledValues(currentTime);
+    this.gateGain.gain.setValueAtTime(0, currentTime + this.easing);
+    this.gateGain.gain.linearRampToValueAtTime(
+      this.oscillator.volume,
+      currentTime + this.envelope.attack + this.easing
+    );
+    // decay to sustain
+    this.gateGain.gain.linearRampToValueAtTime(
+      this.envelope.sustain,
+      currentTime + this.envelope.attack + this.envelope.decay + this.easing
+    );
+  }
+  stopOscillatorConstructor() {
+    let { currentTime } = this.audioContext;
+
+    // release
+    this.gateGain.gain.cancelScheduledValues(currentTime);
+    this.gateGain.gain.setTargetAtTime(
+      0,
+      currentTime,
+      this.envelope.release + this.easing
+    );
     setTimeout(() => {
       this.oscillator.disconnect();
-      // this.whiteNoise.disconnect();
-    }, 6000);
+    }, 10000);
   }
 }

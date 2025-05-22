@@ -1,4 +1,15 @@
-.wave-type {
-  display: flex;
-  flex-direction: column;
+.oscillator {
+  border: solid 1px black;
+}
+
+.oscillator1 {
+  grid-area: oscillator1;
+}
+
+.oscillator2 {
+  grid-area: oscillator2;
+}
+
+.oscillator3 {
+  grid-area: oscillator3;
 }

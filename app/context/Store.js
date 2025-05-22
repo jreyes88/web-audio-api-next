@@ -1,371 +1,315 @@
 "use client";
 
 import { createContext, useReducer } from "react";
-import Gain from "../context/Gain";
-import Oscillator from "../context/Oscillator";
+import Oscillator from "./Oscillator";
 
 const CTX = createContext();
 
 export { CTX };
 
-let nodes = [];
-
 const initialState = {
+  frequency: 440,
   easing: 0.005,
-  windowWidth: 0,
-  // filter: null,
-  // oscillator1: null,
-  // oscillator1Gain: null,
-  gainSettings: {
+  masterGainSettings: {
     volume: 1,
   },
   oscillator1Settings: {
     detune: 0,
     type: "square",
-    octave: "32",
-  },
-  oscillator1GainSettings: {
     volume: 1,
+    octave: "8",
   },
   oscillator2Settings: {
     detune: 0,
     type: "sawtooth",
-    octave: "4",
-  },
-  oscillator2GainSettings: {
-    // volume: 1,
-    volume: 0,
+    octave: 4,
+    volume: 1,
   },
   oscillator3Settings: {
     detune: 0,
-    type: "square",
-    octave: "16",
+    type: "triangle",
+    octave: 16,
+    volume: 1,
   },
-  oscillator3GainSettings: {
-    // volume: 1,
-    volume: 0,
+  filter: null,
+  filterSettings: {
+    frequency: 350,
+    detune: 0,
+    Q: 1,
+    gain: 0,
+    type: "lowpass",
   },
-  // lfoSettings: {
-  //   rate: 11.7, // Rate slider
-  //   delay: 1.4, // Delay Slider
-  //   gain: 2.8, // LFO Knob
-  //   noise: 0.31, // Noise knob
-  // },
   envelopeSettings: {
-    attack: 1.805,
-    decay: 0.1,
-    sustain: 0.6,
-    release: 1.6,
+    attack: 0.1,
+    decay: 0.24,
+    sustain: 0.44, // sustain is a volume
+    release: 0.56,
   },
-  // filterSettings: {
-  //   frequency: 350,
-  //   detune: 0,
-  //   Q: 1,
-  //   gain: 0,
-  //   type: "lowpass",
-  // },
-  // whiteNoise: null,
-  // whiteNoiseGain: null,
+  lfoSettings: {
+    rate: 0.1,
+    delay: 0,
+    gain: 0,
+    // gain: 0.5,
+    noise: 0.31,
+  },
+  audioContext: null,
+  lfo: null,
+  lfoGain: null,
 };
+
+let nodes = [];
 
 function octaveToFrequency(baseFrequency, octave) {
   let frequency = baseFrequency;
 
-  // switch (octave) {
-  //   case "2":
-  //     frequency = baseFrequency * 4;
-  //     break;
-  //   case "4":
-  //     frequency = baseFrequency * 2;
-  //     break;
-  //   case "16":
-  //     frequency = baseFrequency / 2;
-  //     break;
-  //   case "32":
-  //     frequency = baseFrequency / 4;
-  //     break;
-  //   case "64":
-  //     frequency = baseFrequency / 8;
-  //     break;
-  //   default:
-  //     break;
-  // }
+  switch (octave) {
+    case "2":
+      frequency = baseFrequency * 4;
+      break;
+    case "4":
+      frequency = baseFrequency * 2;
+      break;
+    case "16":
+      frequency = baseFrequency / 2;
+      break;
+    case "32":
+      frequency = baseFrequency / 4;
+      break;
+    case "64":
+      frequency = baseFrequency / 8;
+      break;
+    default:
+      break;
+  }
 
   return frequency;
 }
 
 const reducer = (state, action) => {
-  const { id, value, frequency, version } = action.payload || {};
+  const { audioContext, frequency, id, value, version } = action.payload;
   switch (action.type) {
-    case "SET_WINDOW_WIDTH": {
-      return {
-        ...state,
-        windowWidth: action.payload,
-      };
-    }
     case "CREATE_OSCILLATOR": {
-      const { audioContext } = action.payload;
+      // Create Master Gain
+      let masterGain = audioContext.createGain();
 
-      const gain = audioContext.createGain();
-      gain.gain.value = state.gainSettings.volume;
-      // const filter = audioContext.createBiquadFilter();
-      const out = audioContext.destination;
+      // Set Master Gain Settings
+      masterGain.gain.value = state.masterGainSettings.volume;
 
-      // Create gain for oscillator 1
-      const oscillator1Gain = new Gain(
-        audioContext,
-        state.oscillator1GainSettings.volume,
-        gain
-      );
-
-      // Create gain for oscillator 2
-      // const oscillator2Gain = new Gain(
-      //   audioContext,
-      //   state.oscillator2GainSettings.volume,
-      //   gain.gain
-      // );
-
-      // Create gain for oscillator 3
-      // const oscillator3Gain = new Gain(
-      //   audioContext,
-      //   state.oscillator3GainSettings.volume,
-      //   gain.gain
-      // );
-
-      // Calculate octave 1 frequency
-      const octave1Frequency = octaveToFrequency(
+      // Calculate Oscillator Octave Frequencies
+      const oscillator1OctaveFrequency = octaveToFrequency(
         frequency,
         state.oscillator1Settings.octave
       );
 
-      // Calculate octave 2 frequency
-      // const octave2Frequency = octaveToFrequency(
-      //   frequency,
-      //   state.oscillator2Settings.octave
-      // );
+      const oscillator2OctaveFrequency = octaveToFrequency(
+        frequency,
+        state.oscillator2Settings.octave
+      );
 
-      // // Calculate octave 3 frequency
-      // const octave3Frequency = octaveToFrequency(
-      //   frequency,
-      //   state.oscillator3Settings.octave
-      // );
+      const oscillator3OctaveFrequency = octaveToFrequency(
+        frequency,
+        state.oscillator3Settings.octave
+      );
 
-      // Create basic oscillator 1
+      // Create Oscillators
       const oscillator1 = new Oscillator(
         audioContext,
         state.oscillator1Settings.type,
-        octave1Frequency,
+        oscillator1OctaveFrequency,
         state.oscillator1Settings.detune,
-        gain
+        state.envelopeSettings,
+        state.oscillator1Settings.volume,
+        masterGain,
+        state.easing,
+        1
       );
 
-      // Create basic oscillator 2
-      // const oscillator2 = new Oscillator(
-      //   audioContext,
-      //   state.oscillator2Settings.type,
-      //   octave2Frequency,
-      //   state.oscillator2Settings.detune,
-      //   oscillator2Gain.gain
-      // );
+      const oscillator2 = new Oscillator(
+        audioContext,
+        state.oscillator2Settings.type,
+        oscillator2OctaveFrequency,
+        state.oscillator2Settings.detune,
+        state.envelopeSettings,
+        state.oscillator2Settings.volume,
+        masterGain,
+        state.easing,
+        2
+      );
 
-      // Create basic oscillator 3
-      // const oscillator3 = new Oscillator(
-      //   audioContext,
-      //   state.oscillator3Settings.type,
-      //   octave3Frequency,
-      //   state.oscillator3Settings.detune,
-      //   oscillator3Gain.gain
-      // );
+      const oscillator3 = new Oscillator(
+        audioContext,
+        state.oscillator3Settings.type,
+        oscillator3OctaveFrequency,
+        state.oscillator3Settings.detune,
+        state.envelopeSettings,
+        state.oscillator3Settings.volume,
+        masterGain,
+        state.easing,
+        3
+      );
 
-      // gain.connect(filter);
-      // filter.connect(out);
-      gain.connect(out);
+      // Create Filter
+      let filter = audioContext.createBiquadFilter();
+
+      // Set Filter Settings
+      filter.frequency.value = state.filterSettings.frequency;
+      filter.detune.value = state.filterSettings.detune;
+      filter.Q.value = state.filterSettings.Q;
+      filter.gain.value = state.filterSettings.gain;
+      filter.type = state.filterSettings.type;
 
       // Create LFO
-      // const lfo = audioContext.createOscillator();
-      // lfo.frequency.value = state.lfoSettings.rate;
+      const lfo = audioContext.createOscillator();
 
-      // Create gain for LFO
-      // const lfoGain = audioContext.createGain();
+      // Set LFO Settings
+      lfo.frequency.value = state.lfoSettings.rate;
 
-      // lfo.connect(lfoGain);
-      // lfoGain.connect(oscillator1.oscillator.detune);
-      // lfo.start();
+      // Create LFO Gain
+      const lfoGain = audioContext.createGain();
 
-      let { currentTime } = audioContext;
-      // gain.gain.cancelScheduledValues(currentTime);
-      // gain.gain.setValueAtTime(0, currentTime + state.easing);
-      // gain.gain.linearRampToValueAtTime(
-      //   state.gainSettings.volume,
-      //   currentTime + state.envelopeSettings.attack + state.easing
-      // );
-      // gain.gain.linearRampToValueAtTime(
-      //   state.envelopeSettings.sustain,
-      //   currentTime +
-      //     state.envelopeSettings.attack +
-      //     state.envelopeSettings.decay +
-      //     state.easing
-      // );
-
-      // lfoGain.gain.cancelScheduledValues(currentTime);
-      // lfoGain.gain.setValueAtTime(0, currentTime + state.easing);
-      // lfoGain.gain.linearRampToValueAtTime(
-      //   state.lfoSettings.gain,
-      //   currentTime + state.lfoSettings.delay + state.easing
-      // );
-
-      oscillator1.start(
-        // state.lfoSettings,
-        state.envelopeSettings,
-        state.easing,
-        state.oscillator1GainSettings
+      // Set LFO Gain Settings
+      lfoGain.gain.cancelScheduledValues(audioContext.currentTime);
+      lfoGain.gain.setValueAtTime(0, audioContext.currentTime + state.easing);
+      lfoGain.gain.linearRampToValueAtTime(
+        state.lfoSettings.gain,
+        audioContext.currentTime + state.lfoSettings.delay + state.easing
       );
 
-      // oscillator2
-      //   .start
-      //   // state.lfoSettings,
-      //   // state.envelopeSettings,
-      //   // state.easing
-      //   ();
+      lfo.start();
 
-      // oscillator3
-      //   .start
-      //   // state.lfoSettings,
-      //   // state.envelopeSettings,
-      //   // state.easing
-      //   ();
+      // Create destination
+      let out = audioContext.destination;
 
-      nodes.push(oscillator1);
-      // nodes.push({ oscillator: oscillator2, gain: oscillator2Gain });
-      // nodes.push({ oscillator: oscillator3, gain: oscillator3Gain });
+      // Create connections
+      lfo.connect(lfoGain);
+      lfoGain.connect(masterGain);
+      masterGain.connect(filter);
+      filter.connect(out);
 
-      // Put running audioContext, filter, oscillator, lfo, and lfoGain into state so we can adjust them while a note is playing
+      nodes.push(oscillator1, oscillator2, oscillator3);
+
       return {
         ...state,
         audioContext,
-        gain,
-        // oscillator1Gain,
-        // oscillator2Gain,
-        // oscillator3Gain,
-        // filter,
-        // oscillator1: oscillator1.oscillator,
-        // oscillator1Gain: oscillator1Gain.gain,
-        // lfo,
-        // lfoGain,
-        // whiteNoise: oscillator1.whiteNoise,
-        // whiteNoiseGain: oscillator1.whiteNoiseGain,
+        filter,
+        lfo,
+        lfoGain,
       };
     }
     case "KILL_OSCILLATOR": {
-      // can probably spread and slice this
       let newNodes = [];
 
-      // Calculate octave frequency
-      const octave1Frequency = octaveToFrequency(
+      // Calculate Oscillator Octave Frequency
+      const oscillator1OctaveFrequency = octaveToFrequency(
         frequency,
         state.oscillator1Settings.octave
       );
 
-      // const octave2Frequency = octaveToFrequency(
-      //   frequency,
-      //   state.oscillator2Settings.octave
-      // );
+      const oscillator2OctaveFrequency = octaveToFrequency(
+        frequency,
+        state.oscillator2Settings.octave
+      );
 
-      // // Calculate octave 3 frequency
-      // const octave3Frequency = octaveToFrequency(
-      //   frequency,
-      //   state.oscillator3Settings.octave
-      // );
-
-      let { currentTime } = state.audioContext;
+      const oscillator3OctaveFrequency = octaveToFrequency(
+        frequency,
+        state.oscillator3Settings.octave
+      );
 
       nodes.forEach((node) => {
         if (
           Math.round(node.oscillator.frequency.value) ===
-          Math.round(octave1Frequency)
-          // Math.round(node.oscillator.oscillator.frequency.value) ===
-          //   Math.round(octave1Frequency) ||
-          // Math.round(node.oscillator.oscillator.frequency.value) ===
-          //   Math.round(octave2Frequency) ||
-          // Math.round(node.oscillator.oscillator.frequency.value) ===
-          //   Math.round(octave3Frequency)
+            Math.round(oscillator1OctaveFrequency) ||
+          Math.round(node.oscillator.frequency.value) ===
+            Math.round(oscillator2OctaveFrequency) ||
+          Math.round(node.oscillator.frequency.value) ===
+            Math.round(oscillator3OctaveFrequency)
         ) {
-          node.stop(state.envelopeSettings, state.easing);
+          node.stopOscillatorConstructor();
         } else {
           newNodes.push(node);
         }
       });
-
-      // const { gain } = state;
-      // gain.gain.cancelScheduledValues(currentTime);
-      // gain.gain.setValueAtTime(0, currentTime, 9000);
       nodes = newNodes;
+
+      if (state.lfo) {
+        state.lfo.stop();
+        setTimeout(() => {
+          state.lfo.disconnect();
+        }, 10000);
+      }
+      if (state.lfoGain) {
+        state.lfoGain.gain.cancelScheduledValues(
+          state.audioContext.currentTime
+        );
+        state.lfoGain.gain.setTargetAtTime(
+          0,
+          state.audioContext.currentTime,
+          state.envelopeSettings.release + state.easing
+        );
+      }
+
       return {
         ...state,
-        // oscillator: null,
-        // lfo: null,
-        // lfoGain: null,
+        lfo: null,
+        lfoGain: null,
       };
     }
-    case "CHANGE_OSCILLATOR_TYPE": {
-      // if (state.oscillator) {
-      //   state.oscillator[id] = value;
-      // }
-      const oscillatorVersion = `oscillator${version}Settings`;
+    case "CHANGE_OSCILLATOR": {
+      nodes.forEach((node) => {
+        if (node.version === version) {
+          node.oscillator[id].value = value;
+        }
+      });
+      const propertyName = `oscillator${version}Settings`;
       return {
         ...state,
-        [`${oscillatorVersion}`]: {
-          ...state[`${oscillatorVersion}`],
+        [`${propertyName}`]: {
+          ...state[`${propertyName}`],
           [id]: value,
         },
       };
     }
-    case "CHANGE_OSCILLATOR_OCTAVE": {
-      const oscillatorVersion = `oscillator${version}Settings`;
+    case "CHANGE_OSCILLATOR_TYPE": {
+      nodes.forEach((node) => {
+        if (node.version === version) {
+          node.oscillator[id] = value;
+        }
+      });
+      const propertyName = `oscillator${version}Settings`;
       return {
         ...state,
-        [`${oscillatorVersion}`]: {
-          ...state[`${oscillatorVersion}`],
+        [`${propertyName}`]: {
+          ...state[`${propertyName}`],
           [id]: value,
         },
       };
     }
     case "CHANGE_OSCILLATOR_VOLUME": {
-      const oscillatorVersion = `oscillator${version}GainSettings`;
+      const propertyName = `oscillator${version}Settings`;
       return {
         ...state,
-        [`${oscillatorVersion}`]: {
-          ...state[`${oscillatorVersion}`],
+        [`${propertyName}`]: {
+          ...state[`${propertyName}`],
           [id]: value,
         },
       };
     }
-    case "CHANGE_MAIN_VOLUME": {
+    case "CHANGE_OSCILLATOR_OCTAVE": {
+      const propertyName = `oscillator${version}Settings`;
       return {
         ...state,
-        gainSettings: {
-          ...state.gainSettings,
-          volume: value,
+        [`${propertyName}`]: {
+          ...state[`${propertyName}`],
+          [id]: value,
         },
       };
     }
     case "CHANGE_LFO": {
-      // if (id === "rate") {
-      //   if (state.lfo) {
-      //     state.lfo.frequency.setValueAtTime(
-      //       value,
-      //       state.audioContext.currentTime
-      //     );
-      //   }
-      // }
-      // if (id === "gain") {
-      //   if (state.lfoGain) {
-      //     state.lfoGain.gain.setValueAtTime(
-      //       value,
-      //       state.audioContext.currentTime
-      //     );
-      //   }
-      // }
+      if (state.lfo) {
+        if (id === "rate") {
+          state.lfo.frequency.value = value;
+        }
+      }
       return {
         ...state,
         lfoSettings: {
@@ -374,19 +318,19 @@ const reducer = (state, action) => {
         },
       };
     }
-    case "CHANGE_ADSR": {
+    case "CHANGE_LFO_VOLUME": {
       return {
         ...state,
-        envelopeSettings: {
-          ...state.envelopeSettings,
-          [id]: Number(value),
+        lfoSettings: {
+          ...state.lfoSettings,
+          [id]: value,
         },
       };
     }
     case "CHANGE_FILTER": {
-      // if (state.filter) {
-      //   state.filter[id].value = value;
-      // }
+      if (state.filter) {
+        state.filter[id].value = value;
+      }
       return {
         ...state,
         filterSettings: {
@@ -396,9 +340,9 @@ const reducer = (state, action) => {
       };
     }
     case "CHANGE_FILTER_TYPE": {
-      // if (state.filter) {
-      //   state.filter[id] = value;
-      // }
+      if (state.filter) {
+        state.filter[id] = value;
+      }
       return {
         ...state,
         filterSettings: {
@@ -407,8 +351,26 @@ const reducer = (state, action) => {
         },
       };
     }
+    case "CHANGE_ENVELOPE": {
+      return {
+        ...state,
+        envelopeSettings: {
+          ...state.envelopeSettings,
+          [id]: Number(value),
+        },
+      };
+    }
+    case "CHANGE_MASTER_GAIN_VOLUME": {
+      return {
+        ...state,
+        masterGainSettings: {
+          ...state.masterGainSettings,
+          [id]: value,
+        },
+      };
+    }
     default: {
-      console.error("reducer error: action: ", action);
+      console.error("reducer error. action: ", action);
       return {
         ...state,
       };

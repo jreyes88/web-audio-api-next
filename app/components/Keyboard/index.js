@@ -1,5 +1,4 @@
 "use client";
-
 import { useContext, useEffect } from "react";
 import { CTX } from "../../context/Store";
 import QwertyHancock from "qwerty-hancock";
@@ -7,8 +6,6 @@ import styles from "./Keyboard.module.scss";
 
 export default function Keyboard() {
   const [state, dispatch] = useContext(CTX);
-
-  // Keyboard cannot use state! It should just dispatch events from Context. Context can use state.
   useEffect(() => {
     const keyboard = new QwertyHancock({
       id: "keyboard",
@@ -20,11 +17,11 @@ export default function Keyboard() {
     });
     keyboard.keyDown = (note, frequency) => {
       const audioContext = new window.AudioContext();
-
       dispatch({
         type: "CREATE_OSCILLATOR",
         payload: {
           audioContext,
+          note,
           frequency,
         },
       });
@@ -39,9 +36,8 @@ export default function Keyboard() {
       });
     };
   }, []);
-
   return (
-    <div className={styles.keyboard}>
+    <div className={styles["keyboard"]}>
       <div id="keyboard" />
     </div>
   );

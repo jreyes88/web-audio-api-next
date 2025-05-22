@@ -2,6 +2,7 @@
 
 import { useContext } from "react";
 import { CTX } from "../../context/Store";
+import styles from "./Filter.module.scss";
 
 export default function Filter() {
   const [state, dispatch] = useContext(CTX);
@@ -39,54 +40,62 @@ export default function Filter() {
     }
     return false;
   }
+
   return (
-    <div className="control">
+    <div className={styles["filter"]}>
       <h2>Filter</h2>
-      <div className="param">
-        <h3>Frequency</h3>
+      <div className="">
+        <input
+          onChange={change}
+          type="range"
+          id="frequency"
+          value={frequency}
+          max="1000"
+        />
+        <label htmlFor="frequency">Frequency {frequency}</label>
+      </div>
+      <div className="">
         <input
           type="range"
           onChange={change}
-          id="frequency"
-          value={frequency}
-          max="10000"
+          id="detune"
+          value={detune}
+          min="-100"
+          max="100"
         />
-        <p>{frequency}</p>
+        <label htmlFor="detune">Detune {detune}</label>
       </div>
-      <div className="param">
-        <h3>Detune</h3>
-        <input type="range" onChange={change} id="detune" value={detune} />
+      {/* Q is used for Lowpass and Highpass */}
+      <div className="">
+        <input
+          type="range"
+          onChange={change}
+          id="Q"
+          max="10"
+          value={Q}
+          step="0.1"
+          disabled={isLowshelfOrHighshelf(type) === true ? true : false}
+        />
+        <label htmlFor="Q">Q {Q}</label>
+        <p>Lowpass, Highpass, and Notch only</p>
       </div>
-      {isLowshelfOrHighshelf(type) === false && (
-        <div className="param">
-          <h3>Q</h3>
-          <input
-            type="range"
-            onChange={change}
-            id="Q"
-            max="10"
-            value={Q}
-            step="0.1"
-          />
-          <p>{Q}</p>
-        </div>
-      )}
-      {isLowshelfOrHighshelf(type) === true && (
-        <div className="param">
-          <h3>Gain</h3>
-          <input
-            type="range"
-            onChange={change}
-            id="gain"
-            max="10"
-            value={gain}
-            step="0.1"
-          />
-          <p>{gain}</p>
-        </div>
-      )}
 
-      <div className="param">
+      {/* Gain is used for Lowshelf and Highshelf */}
+      <div className="">
+        <input
+          type="range"
+          onChange={change}
+          id="gain"
+          max="10"
+          value={gain}
+          step="0.1"
+          disabled={isLowshelfOrHighshelf(type) === true ? false : true}
+        />
+        <label htmlFor="gain">Gain {gain}</label>
+        <p>Lowshelf and Highshelf only</p>
+      </div>
+
+      <div className="">
         <label htmlFor="type">Filter (Type)</label>
         <select id="type" value={type} onChange={changeType}>
           <option value="lowpass">Lowpass</option>
@@ -95,7 +104,6 @@ export default function Filter() {
           <option value="lowshelf">Lowshelf</option>
           <option value="highshelf">Highshelf</option>
         </select>
-        <p>{type}</p>
       </div>
     </div>
   );

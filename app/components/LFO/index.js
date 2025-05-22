@@ -1,14 +1,14 @@
 "use client";
+
 import { useContext } from "react";
 import { CTX } from "../../context/Store";
 import styles from "./LFO.module.scss";
 
 export default function LFO() {
   const [state, dispatch] = useContext(CTX);
-  const { gain, rate, delay } = state.lfoSettings;
-
-  const change = (e) => {
-    let { id, value } = e.target;
+  const { rate, delay, gain } = state.lfoSettings;
+  const changeLFO = (e) => {
+    const { id, value } = e.target;
     dispatch({
       type: "CHANGE_LFO",
       payload: {
@@ -17,11 +17,10 @@ export default function LFO() {
       },
     });
   };
-
-  const changeLFOGain = (e) => {
-    let { id, value } = e.target;
+  const changeLFOVolume = (e) => {
+    const { id, value } = e.target;
     dispatch({
-      type: "CHANGE_LFO",
+      type: "CHANGE_LFO_VOLUME",
       payload: {
         id,
         value,
@@ -29,22 +28,9 @@ export default function LFO() {
     });
   };
   return (
-    <div className={styles.LFO}>
-      <h2 className={styles.title}>LFO</h2>
-      <input
-        type="range"
-        id="gain"
-        max="15"
-        min="0.1"
-        step="0.1"
-        value={gain}
-        onChange={change}
-        className={styles.slider}
-      />
-      <label htmlFor="gain" className={styles.label}>
-        Gain {gain}
-      </label>
-      <div className={styles.sliderContainer}>
+    <div className={styles["lfo"]}>
+      <h2>LFO</h2>
+      <div className="">
         <input
           type="range"
           id="rate"
@@ -52,15 +38,11 @@ export default function LFO() {
           min="0.1"
           step="0.1"
           value={rate}
-          onChange={change}
-          className={styles.slider}
+          onChange={changeLFO}
         />
-        <label htmlFor="rate" className={styles.label}>
-          Rate {rate}
-        </label>
+        <label htmlFor="rate">Rate {rate}</label>
       </div>
-
-      <div className={styles.sliderContainer}>
+      <div className="">
         <input
           type="range"
           id="delay"
@@ -68,12 +50,21 @@ export default function LFO() {
           min="0"
           step="0.1"
           value={delay}
-          onChange={change}
-          className={styles.slider}
+          onChange={changeLFO}
         />
-        <label htmlFor="delay" className={styles.label}>
-          Delay {delay}
-        </label>
+        <label htmlFor="delay">Delay {delay}</label>
+      </div>
+      <div className="">
+        <input
+          type="range"
+          id="gain"
+          max="1"
+          min="0"
+          step="0.01"
+          value={gain}
+          onChange={changeLFOVolume}
+        />
+        <label htmlFor="gain">Gain {gain}</label>
       </div>
     </div>
   );
