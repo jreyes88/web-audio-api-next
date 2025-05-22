@@ -10,7 +10,7 @@ import Keyboard from "./components/Keyboard";
 export default function Home() {
   return (
     <div className={styles.app}>
-      <h1>Web Audio API Synth in Next.js</h1>
+      <h1 className={styles["heading"]}>Kite synth</h1>
       <div className={styles["synth-layout"]}>
         <Oscillator version={1} />
         <Oscillator version={2} />
@@ -20,6 +20,13 @@ export default function Home() {
         <Envelope />
         <Volume />
         <Keyboard />
+      </div>
+      <div className={styles["header"]}>
+        <p>
+          Kite synth is a synthesizer created with Next.js App Router and the
+          Web Audio API. Dedicated to the Mississippi Kites that moved into the
+          tree next door.
+        </p>
       </div>
     </div>
   );
