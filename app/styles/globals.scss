@@ -1,6 +1,10 @@
 @use "reset";
 @use "typography";
 
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
   height: 100%;
@@ -13,15 +17,25 @@ body {
   max-width: 908px;
   margin-left: auto;
   margin-right: auto;
+  font-size: 12px;
+}
+h2 {
+  font-size: 18px;
+}
+
+label {
+  display: block;
+  margin-top: 8px;
 }
 
 input[type="range"] {
   appearance: none;
   -webkit-appearance: none;
-  width: 200px;
+  width: 100%;
   height: 10px;
   background: white;
   border: none;
+  margin: 4px 0 0 0;
 
   &::-webkit-slider-thumb {
     appearance: none;
@@ -30,5 +44,22 @@ input[type="range"] {
     width: 6px;
     height: 10px;
     opacity: 1;
+  }
+}
+
+.select {
+  label {
+    display: block;
+  }
+  select {
+    margin-top: 4px;
+    display: block;
+  }
+}
+
+label {
+  display: flex;
+  .right {
+    margin-left: auto;
   }
 }

@@ -23,6 +23,9 @@ export default function Volume() {
     <div className={styles["volume"]}>
       <h2>Volume</h2>
       <div className="">
+        <label htmlFor="volume">
+          Volume <span className="right">{volume}</span>
+        </label>
         <input
           type="range"
           id="volume"
@@ -31,7 +34,6 @@ export default function Volume() {
           step="0.1"
           onChange={changeVolume}
         />
-        <label htmlFor="volume">Volume {volume}</label>
       </div>
     </div>
   );
