@@ -6,7 +6,7 @@ import styles from "./LFO.module.scss";
 
 export default function LFO() {
   const [state, dispatch] = useContext(CTX);
-  const { rate, delay, gain, noise } = state.lfoSettings;
+  const { rate, delay, gain } = state.lfoSettings;
   const changeLFO = (e) => {
     const { id, value } = e.target;
     dispatch({
