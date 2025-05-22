@@ -10,47 +10,46 @@ export { CTX };
 const initialState = {
   frequency: 440,
   easing: 0.005,
-  masterGainSettings: {
-    volume: 1,
-  },
   oscillator1Settings: {
     detune: 0,
-    type: "square",
+    type: "sine",
     volume: 1,
     octave: "8",
   },
   oscillator2Settings: {
     detune: 0,
     type: "sawtooth",
-    octave: 4,
+    octave: 32,
     volume: 1,
   },
   oscillator3Settings: {
     detune: 0,
     type: "triangle",
-    octave: 16,
-    volume: 1,
+    octave: 2,
+    volume: 0.2,
+  },
+  lfoSettings: {
+    rate: 5.2,
+    delay: 0.6,
+    gain: 0.23,
+    noise: 0.31,
   },
   filter: null,
   filterSettings: {
     frequency: 350,
     detune: 0,
     Q: 1,
-    gain: 0,
-    type: "lowpass",
+    gain: 5.0,
+    type: "highshelf",
   },
   envelopeSettings: {
-    attack: 0.1,
-    decay: 0.24,
-    sustain: 0.44, // sustain is a volume
-    release: 0.56,
+    attack: 0.7,
+    decay: 0.5,
+    sustain: 0.5, // sustain is a volume
+    release: 0.5,
   },
-  lfoSettings: {
-    rate: 0.1,
-    delay: 0,
-    gain: 0,
-    // gain: 0.5,
-    noise: 0.31,
+  masterGainSettings: {
+    volume: 1,
   },
   audioContext: null,
   lfo: null,

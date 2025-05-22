@@ -6,7 +6,9 @@ import styles from "./Keyboard.module.scss";
 
 export default function Keyboard() {
   const [state, dispatch] = useContext(CTX);
+
   useEffect(() => {
+    const audioContext = new window.AudioContext();
     const keyboard = new QwertyHancock({
       id: "keyboard",
       width: "908",
@@ -16,7 +18,6 @@ export default function Keyboard() {
       activeColour: "#6495ed",
     });
     keyboard.keyDown = (note, frequency) => {
-      const audioContext = new window.AudioContext();
       dispatch({
         type: "CREATE_OSCILLATOR",
         payload: {
