@@ -49,8 +49,8 @@ const initialState = {
     rate: 0.1,
     delay: 0,
     gain: 0,
-    // gain: 0.5,
     noise: 0.31,
+    type: "square",
   },
   audioContext: null,
   lfo: null,
@@ -162,6 +162,7 @@ const reducer = (state, action) => {
       const lfo = audioContext.createOscillator();
 
       // Set LFO Settings
+      lfo.type = state.lfoSettings.type;
       lfo.frequency.value = state.lfoSettings.rate;
 
       // Create LFO Gain
@@ -319,6 +320,15 @@ const reducer = (state, action) => {
       };
     }
     case "CHANGE_LFO_VOLUME": {
+      return {
+        ...state,
+        lfoSettings: {
+          ...state.lfoSettings,
+          [id]: value,
+        },
+      };
+    }
+    case "CHANGE_LFO_TYPE": {
       return {
         ...state,
         lfoSettings: {

@@ -6,7 +6,7 @@ import styles from "./LFO.module.scss";
 
 export default function LFO() {
   const [state, dispatch] = useContext(CTX);
-  const { rate, delay, gain } = state.lfoSettings;
+  const { rate, delay, gain, type } = state.lfoSettings;
   const changeLFO = (e) => {
     const { id, value } = e.target;
     dispatch({
@@ -27,10 +27,29 @@ export default function LFO() {
       },
     });
   };
+  const changeLFOType = (e) => {
+    const { id, value } = e.target;
+    dispatch({
+      type: "CHANGE_LFO_TYPE",
+      payload: {
+        id,
+        value,
+      },
+    });
+  };
   return (
     <div className={styles["lfo"]}>
       <h2>LFO</h2>
       <div className="">
+        <div className="select">
+          <label htmlFor={`lfo-type`}>Wave Type</label>
+          <select id={`lfo-type`} value={type} onChange={changeLFOType}>
+            <option value="sine">Sine</option>
+            <option value="square">Square</option>
+            <option value="sawtooth">Sawtooth</option>
+            <option value="triangle">Triangle</option>
+          </select>
+        </div>
         <label htmlFor="rate">
           Rate <span className="right">{rate}</span>
         </label>
