@@ -2,10 +2,12 @@
 import React, { useState, useRef } from "react";
 import Keyboard from "./components/Keyboard";
 import FilterCutoff from "./components/FilterCutoff";
+import MasterVolume from "./components/MasterVolume";
 import { useSynthEngine } from "./hooks/useSynthEngine";
 
 export default function SynthPage() {
   const [filterFreq, setFilterFreq] = useState(350);
+  const [masterVolume, setMasterVolume] = useState(1);
 
   const settingsRef = useRef({
     filterFreq: 350,
@@ -37,12 +39,19 @@ export default function SynthPage() {
     easing: 0.005,
   });
 
-  const { playNote, stopNote, updateFilter } = useSynthEngine(settingsRef);
+  const { playNote, stopNote, updateFilter, updateMasterVolume } =
+    useSynthEngine(settingsRef);
 
   const handleFilterChange = (val: number) => {
     setFilterFreq(val);
     settingsRef.current.filterFreq = val;
     updateFilter(val);
+  };
+
+  const handleMasterVolumeChange = (val: number) => {
+    setMasterVolume(val);
+    settingsRef.current.masterVolume = val;
+    updateMasterVolume(val);
   };
 
   return (
@@ -51,6 +60,10 @@ export default function SynthPage() {
       <FilterCutoff
         filterFreq={filterFreq}
         handleFilterChange={handleFilterChange}
+      />
+      <MasterVolume
+        masterVolume={masterVolume}
+        handleMasterVolumeChange={handleMasterVolumeChange}
       />
       <Keyboard onKeyDown={playNote} onKeyUp={stopNote} />
     </div>

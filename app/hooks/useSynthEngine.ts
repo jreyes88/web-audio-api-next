@@ -18,7 +18,7 @@ export function useSynthEngine(settingsRef) {
       32: 0.25,
       64: 0.125,
     };
-    return baseFreq * (multipliers[octave] || 10);
+    return baseFreq * (multipliers[octave] || 1);
   };
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export function useSynthEngine(settingsRef) {
       ctx.currentTime,
       0.03
     );
-    masterGain.current.gain.value = s.masterVolume || 1;
+    masterGain.current.gain.value = s.masterVolume ?? 1;
 
     const oscs = [
       new Oscillator({
@@ -108,5 +108,11 @@ export function useSynthEngine(settingsRef) {
     }
   };
 
-  return { playNote, stopNote, updateFilter };
+  const updateMasterVolume = (val) => {
+    if (masterGain.current) {
+      masterGain.current.gain.value = val;
+    }
+  };
+
+  return { playNote, stopNote, updateFilter, updateMasterVolume };
 }
