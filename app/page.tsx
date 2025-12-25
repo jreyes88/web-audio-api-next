@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useRef } from "react";
 import Keyboard from "./components/Keyboard";
+import FilterCutoff from "./components/FilterCutoff";
 import { useSynthEngine } from "./hooks/useSynthEngine";
 
 export default function SynthPage() {
@@ -36,27 +37,21 @@ export default function SynthPage() {
     easing: 0.005,
   });
 
-  const { playNote, stopNote } = useSynthEngine(settingsRef);
+  const { playNote, stopNote, updateFilter } = useSynthEngine(settingsRef);
 
   const handleFilterChange = (val: number) => {
     setFilterFreq(val);
     settingsRef.current.filterFreq = val;
+    updateFilter(val);
   };
 
   return (
     <div className="">
       <h1>Synth</h1>
-      <div className="">
-        <label htmlFor="filter-cutoff">Filter cutoff: {filterFreq}Hz</label>
-        <input
-          id="filter-cutoff"
-          type="range"
-          min="50"
-          max="5000"
-          value={filterFreq}
-          onChange={(e) => handleFilterChange(parseInt(e.target.value))}
-        />
-      </div>
+      <FilterCutoff
+        filterFreq={filterFreq}
+        handleFilterChange={handleFilterChange}
+      />
       <Keyboard onKeyDown={playNote} onKeyUp={stopNote} />
     </div>
   );

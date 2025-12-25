@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import Oscillator from "../context/Oscillator";
+import Oscillator from "../constructors/Oscillator";
 
 export function useSynthEngine(settingsRef) {
   const audioCtx = useRef<AudioContext | null>(null);
@@ -98,5 +98,15 @@ export function useSynthEngine(settingsRef) {
     }
   };
 
-  return { playNote, stopNote };
+  const updateFilter = (val) => {
+    if (filterNode.current) {
+      filterNode.current.frequency.setTargetAtTime(
+        val,
+        audioCtx.current.currentTime,
+        0.03
+      );
+    }
+  };
+
+  return { playNote, stopNote, updateFilter };
 }
