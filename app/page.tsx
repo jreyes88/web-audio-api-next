@@ -3,11 +3,18 @@ import React, { useState, useRef } from "react";
 import Keyboard from "./components/Keyboard";
 import FilterCutoff from "./components/FilterCutoff";
 import MasterVolume from "./components/MasterVolume";
+import Envelope from "./components/Envelope";
 import { useSynthEngine } from "./hooks/useSynthEngine";
 
 export default function SynthPage() {
   const [filterFreq, setFilterFreq] = useState(350);
   const [masterVolume, setMasterVolume] = useState(1);
+  const [envelope, setEnvelope] = useState({
+    attack: 0.1,
+    decay: 0.24,
+    sustain: 0.44,
+    release: 0.56,
+  });
 
   const settingsRef = useRef({
     filterFreq: 350,
@@ -54,6 +61,11 @@ export default function SynthPage() {
     updateMasterVolume(val);
   };
 
+  const handleEnvelopeChange = (envelopeVals) => {
+    setEnvelope(envelopeVals);
+    settingsRef.current.envelope = envelopeVals;
+  };
+
   return (
     <div className="">
       <h1>Synth</h1>
@@ -64,6 +76,10 @@ export default function SynthPage() {
       <MasterVolume
         masterVolume={masterVolume}
         handleMasterVolumeChange={handleMasterVolumeChange}
+      />
+      <Envelope
+        envelopeVals={envelope}
+        handleEnvelopeChange={handleEnvelopeChange}
       />
       <Keyboard onKeyDown={playNote} onKeyUp={stopNote} />
     </div>

@@ -1,4 +1,4 @@
-import { OscillatorProps, EnvelopeProps } from "./types";
+import { OscillatorProps, EnvelopeProps } from "../types/types";
 
 export default class Oscillator {
   private audioContext: AudioContext;

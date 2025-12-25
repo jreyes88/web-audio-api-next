@@ -11,7 +11,7 @@ export default function MasterVolume({
   handleMasterVolumeChange,
 }: MasterVolumeProps) {
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleMasterVolumeChange(parseFloat(e.target.value, 10));
+    handleMasterVolumeChange(parseFloat(e.target.value));
   };
   return (
     <div className={styles["volume"]}>

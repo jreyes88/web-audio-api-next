@@ -1,21 +1,25 @@
-"use client";
-
-import { useContext } from "react";
-import { CTX } from "../../context/Store";
+import React from "react";
+import { EnvelopeProps } from "../../types/types";
 import styles from "./Envelope.module.scss";
 
-export default function Envelope() {
-  const [state, dispatch] = useContext(CTX);
-  const { attack, decay, sustain, release } = state.envelopeSettings;
-  const change = (e) => {
-    let { id, value } = e.target;
-    dispatch({
-      type: "CHANGE_ENVELOPE",
-      payload: {
-        id,
-        value,
-      },
-    });
+interface EnvelopeComponentProps {
+  envelopeVals: EnvelopeProps;
+  handleEnvelopeChange: (vals: EnvelopeProps) => void;
+}
+
+export default function Envelope({
+  envelopeVals,
+  handleEnvelopeChange,
+}: EnvelopeComponentProps) {
+  const { attack, decay, sustain, release } = envelopeVals;
+  const onChange = (e) => {
+    const prop = e.target.id;
+    const val = parseFloat(e.target.value);
+    const nextEnvelopeVals = {
+      ...envelopeVals,
+      [prop]: val,
+    };
+    handleEnvelopeChange(nextEnvelopeVals);
   };
   return (
     <div className={styles["envelope"]}>
@@ -25,7 +29,7 @@ export default function Envelope() {
           Attack <span className="right">{attack}</span>
         </label>
         <input
-          onChange={change}
+          onChange={onChange}
           type="range"
           value={attack}
           min="0"
@@ -39,7 +43,7 @@ export default function Envelope() {
           Decay <span className="right">{decay}</span>
         </label>
         <input
-          onChange={change}
+          onChange={onChange}
           type="range"
           value={decay}
           min="0"
@@ -53,7 +57,7 @@ export default function Envelope() {
           Sustain <span className="right">{sustain}</span>
         </label>
         <input
-          onChange={change}
+          onChange={onChange}
           type="range"
           value={sustain}
           min="0"
@@ -67,7 +71,7 @@ export default function Envelope() {
           Release <span className="right">{release}</span>
         </label>
         <input
-          onChange={change}
+          onChange={onChange}
           type="range"
           value={release}
           min="0"
