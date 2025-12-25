@@ -1,5 +1,4 @@
 import "./styles/globals.scss";
-import Store from "./context/Store";
 import { Orbitron } from "next/font/google";
 
 const font = Orbitron({
@@ -15,10 +14,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <Store>
-      <html lang="en" className={`${font.variable}`}>
-        <body>{children}</body>
-      </html>
-    </Store>
+    <html lang="en" className={`${font.variable}`}>
+      <body>{children}</body>
+    </html>
   );
 }
