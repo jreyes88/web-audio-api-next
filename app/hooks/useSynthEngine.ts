@@ -53,39 +53,39 @@ export function useSynthEngine(settingsRef) {
     masterGain.current.gain.value = s.masterVolume || 1;
 
     const oscs = [
-      new Oscillator(
-        ctx,
-        s.osc1.type,
-        octaveToFrequency(frequency, s.osc1.octave),
-        s.osc1.detune,
-        s.envelope,
-        s.osc1.volume,
-        masterGain.current,
-        s.easing,
-        1
-      ),
-      new Oscillator(
-        ctx,
-        s.osc2.type,
-        octaveToFrequency(frequency, s.osc2.octave),
-        s.osc2.detune,
-        s.envelope,
-        s.osc2.volume,
-        masterGain.current,
-        s.easing,
-        2
-      ),
-      new Oscillator(
-        ctx,
-        s.osc3.type,
-        octaveToFrequency(frequency, s.osc3.octave),
-        s.osc3.detune,
-        s.envelope,
-        s.osc3.volume,
-        masterGain.current,
-        s.easing,
-        3
-      ),
+      new Oscillator({
+        audioContext: ctx,
+        type: s.osc1.type,
+        frequency: octaveToFrequency(frequency, s.osc1.octave),
+        detune: s.osc1.detune,
+        envelope: s.envelope,
+        volume: s.osc1.volume,
+        connection: masterGain.current,
+        easing: s.easing,
+        version: 1,
+      }),
+      new Oscillator({
+        audioContext: ctx,
+        type: s.osc2.type,
+        frequency: octaveToFrequency(frequency, s.osc2.octave),
+        detune: s.osc2.detune,
+        envelope: s.envelope,
+        volume: s.osc2.volume,
+        connection: masterGain.current,
+        easing: s.easing,
+        version: 2,
+      }),
+      new Oscillator({
+        audioContext: ctx,
+        type: s.osc3.type,
+        frequency: octaveToFrequency(frequency, s.osc3.octave),
+        detune: s.osc3.detune,
+        envelope: s.envelope,
+        volume: s.osc3.volume,
+        connection: masterGain.current,
+        easing: s.easing,
+        version: 3,
+      }),
     ];
     activeNotes.current.set(note, oscs);
   };
