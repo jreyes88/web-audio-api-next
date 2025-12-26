@@ -31,19 +31,19 @@ export default function SynthPage() {
       type: "square",
       octave: 8,
       detune: 0,
-      volume: 1,
+      volume: 0.35,
     },
     osc2: {
       type: "sawtooth",
       octave: 4,
       detune: 0,
-      volume: 1,
+      volume: 0.35,
     },
     osc3: {
       type: "triangle",
       octave: 16,
       detune: 0,
-      volume: 1,
+      volume: 0.35,
     },
   });
 
@@ -60,19 +60,19 @@ export default function SynthPage() {
       type: "square",
       octave: 8,
       detune: 0,
-      volume: 1,
+      volume: 0.35,
     },
     osc2: {
       type: "sawtooth",
       octave: 4,
       detune: 0,
-      volume: 1,
+      volume: 0.35,
     },
     osc3: {
       type: "triangle",
       octave: 16,
       detune: 0,
-      volume: 1,
+      volume: 0.35,
     },
     easing: 0.005,
   });

@@ -66,7 +66,9 @@ export default function Oscillator({
         </div>
       </div>
       <div className={`${styles["slider"]}`}>
-        <label htmlFor={`${uniqueId}-detune`}>Detune</label>
+        <label htmlFor={`${uniqueId}-detune`}>
+          Detune <span className="right">{detune}</span>
+        </label>
         <input
           type="range"
           min="-10"
@@ -77,13 +79,15 @@ export default function Oscillator({
         />
       </div>
       <div className="">
-        <label htmlFor={`${uniqueId}-volume`}>Volume</label>
+        <label htmlFor={`${uniqueId}-volume`}>
+          Volume <span className="right">{volume}</span>
+        </label>
         <input
           type="range"
           id={`${uniqueId}-volume`}
-          max="2"
-          min="0"
-          step="0.1"
+          max="0.4"
+          min="0.3"
+          step="0.01"
           value={volume}
           onChange={onChange}
         />
