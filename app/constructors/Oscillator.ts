@@ -65,19 +65,18 @@ export default class Oscillator {
   }
   stopOscillatorConstructor(): void {
     const { currentTime } = this.audioContext;
-    this.gateGain.gain.cancelScheduledValues(currentTime);
-    this.gateGain.gain.setTargetAtTime(
-      0,
-      currentTime,
-      this.envelope.release + this.easing
-    );
 
-    this.oscillator.stop(
-      currentTime + this.envelope.release + this.easing + 0.1
-    );
+    this.gateGain.gain.cancelScheduledValues(currentTime);
+    this.gateGain.gain.setValueAtTime(this.gateGain.gain.value, currentTime);
+
+    const releaseTime = currentTime + this.envelope.release + this.easing;
+    this.gateGain.gain.exponentialRampToValueAtTime(0.0001, releaseTime);
+
+    this.oscillator.stop(releaseTime);
+
     setTimeout(() => {
       this.oscillator.disconnect();
       this.gateGain.disconnect();
-    }, (this.envelope.release + 1) * 1000);
+    }, (this.envelope.release + 0.5) * 1000);
   }
 }
