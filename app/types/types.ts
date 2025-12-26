@@ -16,3 +16,20 @@ export interface EnvelopeProps {
   sustain: number;
   release: number;
 }
+
+export interface OscillatorSettings {
+  type: "sine" | "square" | "sawtooth" | "triangle";
+  octave: number;
+  detune: number;
+  volume: number;
+}
+
+export interface SynthSettings {
+  filterFreq: number;
+  masterVolume: number;
+  envelope: EnvelopeProps;
+  osc1: OscillatorSettings;
+  osc2: OscillatorSettings;
+  osc3: OscillatorSettings;
+  easing: number;
+}
