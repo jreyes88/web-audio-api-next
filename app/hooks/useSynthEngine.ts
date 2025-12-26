@@ -2,6 +2,7 @@
 
 import { useRef, useEffect } from "react";
 import Oscillator from "../constructors/Oscillator";
+import { FilterSettings } from "../types/types";
 
 export function useSynthEngine(settingsRef) {
   const audioCtx = useRef<AudioContext | null>(null);
@@ -98,14 +99,23 @@ export function useSynthEngine(settingsRef) {
     }
   };
 
-  const updateFilter = (val) => {
-    if (filterNode.current) {
-      filterNode.current.frequency.setTargetAtTime(
-        val,
-        audioCtx.current.currentTime,
-        0.03
-      );
-    }
+  const updateFilter = (settings: FilterSettings) => {
+    if (!filterNode.current) return;
+    const ctx = audioCtx.current;
+    const { currentTime } = ctx;
+    filterNode.current.type = settings.type;
+    filterNode.current.frequency.setTargetAtTime(
+      settings.frequency,
+      currentTime,
+      0.005
+    );
+    filterNode.current.detune.setTargetAtTime(
+      settings.detune,
+      currentTime,
+      0.005
+    );
+    filterNode.current.Q.setTargetAtTime(settings.Q, currentTime, 0.005);
+    filterNode.current.gain.setTargetAtTime(settings.gain, currentTime, 0.005);
   };
 
   const updateMasterVolume = (val) => {

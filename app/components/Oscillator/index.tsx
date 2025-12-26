@@ -19,6 +19,7 @@ export default function Oscillator({
 }: OscillatorComponentProps) {
   const uniqueId = useId();
   const { type, octave, detune, volume } = oscillatorSettings;
+
   const onChange = (e) => {
     const id = e.target.id;
     const prop = id.split("-").pop();
@@ -30,7 +31,7 @@ export default function Oscillator({
     handleOscillatorSettingsChange(version, nextOscillatorSettings);
   };
 
-  const onTypechange = (e) => {
+  const onTypeChange = (e) => {
     const id = e.target.id;
     const prop = id.split("-").pop();
     const val = e.target.value;
@@ -47,7 +48,7 @@ export default function Oscillator({
       <div className={`${styles["selects"]}`}>
         <div className="select">
           <label htmlFor={`${uniqueId}-type`}>Wave Type</label>
-          <select id={`${uniqueId}-type`} value={type} onChange={onTypechange}>
+          <select id={`${uniqueId}-type`} value={type} onChange={onTypeChange}>
             <option value="sine">Sine</option>
             <option value="square">Square</option>
             <option value="sawtooth">Sawtooth</option>

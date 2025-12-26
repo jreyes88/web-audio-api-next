@@ -32,4 +32,13 @@ export interface SynthSettings {
   osc2: OscillatorSettings;
   osc3: OscillatorSettings;
   easing: number;
+  filterSettings: FilterSettings;
+}
+
+export interface FilterSettings {
+  type: BiquadFilterType;
+  frequency: number;
+  detune: number;
+  Q: number;
+  gain: number;
 }

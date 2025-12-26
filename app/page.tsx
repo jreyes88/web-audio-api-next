@@ -1,15 +1,16 @@
 "use client";
 import React, { useState, useRef } from "react";
 import Keyboard from "./components/Keyboard";
-import FilterCutoff from "./components/FilterCutoff";
 import MasterVolume from "./components/MasterVolume";
 import Envelope from "./components/Envelope";
 import Oscillator from "./components/Oscillator";
+import Filter from "./components/Filter";
 import { useSynthEngine } from "./hooks/useSynthEngine";
 import {
   EnvelopeProps,
   OscillatorSettings,
   SynthSettings,
+  FilterSettings,
 } from "./types/types";
 
 interface OscillatorBank {
@@ -17,7 +18,6 @@ interface OscillatorBank {
 }
 
 export default function SynthPage() {
-  const [filterFreq, setFilterFreq] = useState<number>(350);
   const [masterVolume, setMasterVolume] = useState<number>(1);
   const [envelope, setEnvelope] = useState<EnvelopeProps>({
     attack: 0.1,
@@ -45,6 +45,14 @@ export default function SynthPage() {
       detune: 0,
       volume: 0.35,
     },
+  });
+
+  const [filterSettings, setFilterSettings] = useState<FilterSettings>({
+    type: "lowpass",
+    frequency: 350,
+    detune: 0,
+    Q: 1,
+    gain: 0,
   });
 
   const settingsRef = useRef<SynthSettings>({
@@ -75,44 +83,47 @@ export default function SynthPage() {
       volume: 0.35,
     },
     easing: 0.005,
+    filterSettings: {
+      type: "lowpass",
+      frequency: 350,
+      detune: 0,
+      Q: 1,
+      gain: 0,
+    },
   });
 
   const { playNote, stopNote, updateFilter, updateMasterVolume } =
     useSynthEngine(settingsRef);
 
-  const handleFilterChange = (val: number) => {
-    setFilterFreq(val);
-    settingsRef.current.filterFreq = val;
-    updateFilter(val);
+  const handleMasterVolumeChange = (nextMasterVolume: number) => {
+    setMasterVolume(nextMasterVolume);
+    settingsRef.current.masterVolume = nextMasterVolume;
+    updateMasterVolume(nextMasterVolume);
   };
 
-  const handleMasterVolumeChange = (val: number) => {
-    setMasterVolume(val);
-    settingsRef.current.masterVolume = val;
-    updateMasterVolume(val);
+  const handleEnvelopeChange = (nextEnvelopeSettings) => {
+    setEnvelope(nextEnvelopeSettings);
+    settingsRef.current.envelope = nextEnvelopeSettings;
   };
 
-  const handleEnvelopeChange = (envelopeVals) => {
-    setEnvelope(envelopeVals);
-    settingsRef.current.envelope = envelopeVals;
-  };
-
-  const handleOscillatorSettingsChange = (version, oscillatorSettings) => {
+  const handleOscillatorSettingsChange = (version, nextOscillatorSettings) => {
     const whichOscillator = `osc${version}`;
     setOscillators((prev) => ({
       ...prev,
-      [whichOscillator]: oscillatorSettings,
+      [whichOscillator]: nextOscillatorSettings,
     }));
-    settingsRef.current[whichOscillator] = oscillatorSettings;
+    settingsRef.current[whichOscillator] = nextOscillatorSettings;
+  };
+
+  const handleFilterSettingsChange = (nextFilterSettings) => {
+    setFilterSettings(nextFilterSettings);
+    settingsRef.current.filterSettings = nextFilterSettings;
+    updateFilter(nextFilterSettings);
   };
 
   return (
     <div className="">
       <h1>Synth</h1>
-      <FilterCutoff
-        filterFreq={filterFreq}
-        handleFilterChange={handleFilterChange}
-      />
       <MasterVolume
         masterVolume={masterVolume}
         handleMasterVolumeChange={handleMasterVolumeChange}
@@ -135,6 +146,10 @@ export default function SynthPage() {
         version={3}
         oscillatorSettings={oscillators.osc3}
         handleOscillatorSettingsChange={handleOscillatorSettingsChange}
+      />
+      <Filter
+        filterSettings={filterSettings}
+        handleFilterSettingsChange={handleFilterSettingsChange}
       />
       <Keyboard onKeyDown={playNote} onKeyUp={stopNote} />
     </div>
