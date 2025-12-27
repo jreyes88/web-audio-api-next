@@ -57,6 +57,7 @@ export function useSynthEngine(
 
     const oscs = [
       new Oscillator({
+        ...s.osc1,
         audioContext: ctx,
         type: s.osc1.type,
         frequency: octaveToFrequency(frequency, s.osc1.octave),
@@ -68,6 +69,7 @@ export function useSynthEngine(
         version: 1,
       }),
       new Oscillator({
+        ...s.osc2,
         audioContext: ctx,
         type: s.osc2.type,
         frequency: octaveToFrequency(frequency, s.osc2.octave),
@@ -79,6 +81,7 @@ export function useSynthEngine(
         version: 2,
       }),
       new Oscillator({
+        ...s.osc3,
         audioContext: ctx,
         type: s.osc3.type,
         frequency: octaveToFrequency(frequency, s.osc3.octave),

@@ -17,9 +17,11 @@ export default function Oscillator({
   handleOscillatorSettingsChange,
 }: OscillatorComponentProps) {
   const uniqueId = useId();
-  const { type, octave, detune, volume } = oscillatorSettings;
+  const { type, octave, detune, volume, isMuted } = oscillatorSettings;
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const id = e.target.id;
     const prop = id.split("-").pop();
     const val = parseFloat(e.target.value);
@@ -30,13 +32,21 @@ export default function Oscillator({
     handleOscillatorSettingsChange(version, nextOscillatorSettings);
   };
 
-  const onTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const id = e.target.id;
     const prop = id.split("-").pop();
     const val = e.target.value;
     const nextOscillatorSettings = {
       ...oscillatorSettings,
       [prop]: val,
+    };
+    handleOscillatorSettingsChange(version, nextOscillatorSettings);
+  };
+
+  const onMuteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const nextOscillatorSettings = {
+      ...oscillatorSettings,
+      isMuted: e.target.checked,
     };
     handleOscillatorSettingsChange(version, nextOscillatorSettings);
   };
@@ -90,6 +100,15 @@ export default function Oscillator({
           step="0.01"
           value={volume}
           onChange={onChange}
+        />
+      </div>
+      <div className="">
+        <label htmlFor={`${uniqueId}-mute`}>Mute</label>
+        <input
+          id={`${uniqueId}-mute`}
+          type="checkbox"
+          checked={isMuted}
+          onChange={onMuteChange}
         />
       </div>
     </div>

@@ -20,12 +20,13 @@ export default class Oscillator {
       connection,
       easing,
       version,
+      isMuted,
     } = props;
 
     this.version = version;
     this.audioContext = audioContext;
     this.easing = easing;
-    this.targetVolume = volume;
+    this.targetVolume = isMuted ? 0 : volume;
 
     this.envelope = envelope || {
       attack: 0.005,

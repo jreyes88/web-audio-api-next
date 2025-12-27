@@ -8,6 +8,7 @@ export interface OscillatorConstructorProps {
   connection: GainNode;
   easing: number;
   version: number;
+  isMuted: boolean;
 }
 
 export interface EnvelopeSettings {
@@ -22,6 +23,7 @@ export interface OscillatorSettings {
   octave: number;
   detune: number;
   volume: number;
+  isMuted: boolean;
 }
 
 export interface SynthSettings {

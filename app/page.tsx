@@ -32,18 +32,21 @@ export default function SynthPage() {
       octave: 8,
       detune: 0,
       volume: 0.35,
+      isMuted: false,
     },
     osc2: {
       type: "sawtooth",
       octave: 4,
       detune: 0,
       volume: 0.35,
+      isMuted: false,
     },
     osc3: {
       type: "triangle",
       octave: 16,
       detune: 0,
       volume: 0.35,
+      isMuted: false,
     },
   });
 
@@ -69,18 +72,21 @@ export default function SynthPage() {
       octave: 8,
       detune: 0,
       volume: 0.35,
+      isMuted: false,
     },
     osc2: {
       type: "sawtooth",
       octave: 4,
       detune: 0,
       volume: 0.35,
+      isMuted: false,
     },
     osc3: {
       type: "triangle",
       octave: 16,
       detune: 0,
       volume: 0.35,
+      isMuted: false,
     },
     easing: 0.005,
     filterSettings: {
@@ -92,26 +98,22 @@ export default function SynthPage() {
     },
   });
 
-  const {
-    playNote: enginePlayNote,
-    stopNote: engineStopNote,
-    updateFilter,
-    updateMasterVolume,
-  } = useSynthEngine(settingsRef);
+  const { playNote, stopNote, updateFilter, updateMasterVolume } =
+    useSynthEngine(settingsRef);
 
-  const playNote = useCallback(
-    (note: string, freq: number) => {
-      enginePlayNote(note, freq);
-    },
-    [enginePlayNote]
-  );
+  // const playNote = useCallback(
+  //   (note: string, freq: number) => {
+  //     enginePlayNote(note, freq);
+  //   },
+  //   [enginePlayNote]
+  // );
 
-  const stopNote = useCallback(
-    (note: string) => {
-      engineStopNote(note);
-    },
-    [engineStopNote]
-  );
+  // const stopNote = useCallback(
+  //   (note: string) => {
+  //     engineStopNote(note);
+  //   },
+  //   [engineStopNote]
+  // );
 
   const handleMasterVolumeChange = (nextMasterVolume: number) => {
     setMasterVolume(nextMasterVolume);

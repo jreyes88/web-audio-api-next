@@ -9,10 +9,6 @@ interface KeyboardProps {
 
 export default function Keyboard({ onKeyDown, onKeyUp }: KeyboardProps) {
   useEffect(() => {
-    const container = document.getElementById("keyboard");
-    if (!container) return;
-    container.innerHTML = "";
-
     const keyboard = new QwertyHancock({
       id: "keyboard",
       width: 908,
@@ -26,7 +22,8 @@ export default function Keyboard({ onKeyDown, onKeyUp }: KeyboardProps) {
     keyboard.keyUp = onKeyUp;
 
     return () => {
-      container.innerHTML = "";
+      const kbDiv = document.getElementById("keyboard");
+      if (kbDiv) kbDiv.innerHTML = "";
     };
   }, [onKeyDown, onKeyUp]);
 
