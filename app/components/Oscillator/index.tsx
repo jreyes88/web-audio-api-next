@@ -52,7 +52,10 @@ export default function Oscillator({
   };
 
   return (
-    <div className="">
+    <div
+      className=""
+      style={{ borderTop: "1px solid red", borderBottom: "1px solid red" }}
+    >
       <h2>Oscillator {version}</h2>
       <div className="">
         <div className="select">

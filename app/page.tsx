@@ -98,22 +98,26 @@ export default function SynthPage() {
     },
   });
 
-  const { playNote, stopNote, updateFilter, updateMasterVolume } =
-    useSynthEngine(settingsRef);
+  const {
+    playNote: enginePlayNote,
+    stopNote: engineStopNote,
+    updateFilter,
+    updateMasterVolume,
+  } = useSynthEngine(settingsRef);
 
-  // const playNote = useCallback(
-  //   (note: string, freq: number) => {
-  //     enginePlayNote(note, freq);
-  //   },
-  //   [enginePlayNote]
-  // );
+  const playNote = useCallback(
+    (note: string, freq: number) => {
+      enginePlayNote(note, freq);
+    },
+    [enginePlayNote]
+  );
 
-  // const stopNote = useCallback(
-  //   (note: string) => {
-  //     engineStopNote(note);
-  //   },
-  //   [engineStopNote]
-  // );
+  const stopNote = useCallback(
+    (note: string) => {
+      engineStopNote(note);
+    },
+    [engineStopNote]
+  );
 
   const handleMasterVolumeChange = (nextMasterVolume: number) => {
     setMasterVolume(nextMasterVolume);

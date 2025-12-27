@@ -67,6 +67,7 @@ export function useSynthEngine(
         connection: masterGain.current,
         easing: s.easing,
         version: 1,
+        isMuted: s.osc1.isMuted,
       }),
       new Oscillator({
         ...s.osc2,
@@ -79,6 +80,7 @@ export function useSynthEngine(
         connection: masterGain.current,
         easing: s.easing,
         version: 2,
+        isMuted: s.osc2.isMuted,
       }),
       new Oscillator({
         ...s.osc3,
@@ -91,6 +93,7 @@ export function useSynthEngine(
         connection: masterGain.current,
         easing: s.easing,
         version: 3,
+        isMuted: s.osc3.isMuted,
       }),
     ];
     activeNotes.current.set(note, oscs);
