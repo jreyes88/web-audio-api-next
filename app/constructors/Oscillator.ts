@@ -17,7 +17,7 @@ export default class Oscillator {
       type,
       frequency,
       detune,
-      envelope,
+      envelopeSettings,
       volume,
       connection,
       easing,
@@ -26,14 +26,12 @@ export default class Oscillator {
       lfoSettings,
     } = props;
 
-    console.log(lfoSettings);
-
     this.version = version;
     this.audioContext = audioContext;
     this.easing = easing;
     this.targetVolume = isMuted ? 0 : volume;
 
-    this.envelope = envelope || {
+    this.envelope = envelopeSettings || {
       attack: 0.005,
       decay: 0.1,
       sustain: 0.6,
