@@ -1,35 +1,16 @@
-"use client";
+import React from "react";
+import { FilterSettings } from "../../types/types";
 
-import { useContext } from "react";
-import { CTX } from "../../context/Store";
-import styles from "./Filter.module.scss";
+interface FilterComponentProps {
+  filterSettings: FilterSettings;
+  handleFilterSettingsChange: (nextFiltersettings: FilterSettings) => void;
+}
 
-export default function Filter() {
-  const [state, dispatch] = useContext(CTX);
-
-  const { frequency, detune, Q, gain, type } = state.filterSettings;
-
-  const change = (e) => {
-    let { id, value } = e.target;
-    dispatch({
-      type: "CHANGE_FILTER",
-      payload: {
-        id,
-        value,
-      },
-    });
-  };
-
-  const changeType = (e) => {
-    let { id, value } = e.target;
-    dispatch({
-      type: "CHANGE_FILTER_TYPE",
-      payload: {
-        id,
-        value,
-      },
-    });
-  };
+export default function Filter({
+  filterSettings,
+  handleFilterSettingsChange,
+}: FilterComponentProps) {
+  const { type, frequency, detune, Q, gain } = filterSettings;
 
   function isLowshelfOrHighshelf(type) {
     if (type === "lowshelf") {
@@ -41,14 +22,34 @@ export default function Filter() {
     return false;
   }
 
+  const onTypeChange = (e) => {
+    const prop = e.target.id;
+    const val = e.target.value;
+    const nextFilterSettings = {
+      ...filterSettings,
+      [prop]: val,
+    };
+    handleFilterSettingsChange(nextFilterSettings);
+  };
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const prop = e.target.id;
+    const val = parseFloat(e.target.value);
+    const nextFilterSettings = {
+      ...filterSettings,
+      [prop]: val,
+    };
+    handleFilterSettingsChange(nextFilterSettings);
+  };
+
   return (
-    <div className={styles["filter"]}>
+    <div className="">
       <h2>Filter</h2>
-      <div className={styles["filter-layout"]}>
+      <div className="">
         <div className="">
           <div className="select">
             <label htmlFor="type">Filter Type</label>
-            <select id="type" value={type} onChange={changeType}>
+            <select id="type" value={type} onChange={onTypeChange}>
               <option value="lowpass">Lowpass</option>
               <option value="highpass">Highpass</option>
               <option value="notch">Notch</option>
@@ -61,7 +62,7 @@ export default function Filter() {
               Frequency <span className="right">{frequency}</span>
             </label>
             <input
-              onChange={change}
+              onChange={onChange}
               type="range"
               id="frequency"
               value={frequency}
@@ -74,7 +75,7 @@ export default function Filter() {
             </label>
             <input
               type="range"
-              onChange={change}
+              onChange={onChange}
               id="detune"
               value={detune}
               min="-100"
@@ -91,7 +92,7 @@ export default function Filter() {
             </label>
             <input
               type="range"
-              onChange={change}
+              onChange={onChange}
               id="Q"
               max="10"
               value={Q}
@@ -108,7 +109,7 @@ export default function Filter() {
             </label>
             <input
               type="range"
-              onChange={change}
+              onChange={onChange}
               id="gain"
               max="10"
               value={gain}
