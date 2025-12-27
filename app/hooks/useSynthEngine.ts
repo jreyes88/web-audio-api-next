@@ -68,6 +68,7 @@ export function useSynthEngine(
         easing: s.easing,
         version: 1,
         isMuted: s.osc1.isMuted,
+        lfoSettings: s.lfoSettings,
       }),
       new Oscillator({
         ...s.osc2,
@@ -81,6 +82,7 @@ export function useSynthEngine(
         easing: s.easing,
         version: 2,
         isMuted: s.osc2.isMuted,
+        lfoSettings: s.lfoSettings,
       }),
       new Oscillator({
         ...s.osc3,
@@ -94,6 +96,7 @@ export function useSynthEngine(
         easing: s.easing,
         version: 3,
         isMuted: s.osc3.isMuted,
+        lfoSettings: s.lfoSettings,
       }),
     ];
     activeNotes.current.set(note, oscs);

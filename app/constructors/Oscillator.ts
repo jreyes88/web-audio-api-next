@@ -8,6 +8,8 @@ export default class Oscillator {
   private easing: number;
   private targetVolume: number;
   public version: number;
+  private lfo: OscillatorNode;
+  private lfoGain: GainNode;
 
   constructor(props: OscillatorConstructorProps) {
     const {
@@ -21,7 +23,10 @@ export default class Oscillator {
       easing,
       version,
       isMuted,
+      lfoSettings,
     } = props;
+
+    console.log(lfoSettings);
 
     this.version = version;
     this.audioContext = audioContext;
@@ -43,9 +48,20 @@ export default class Oscillator {
     this.gateGain = this.audioContext.createGain();
     this.gateGain.gain.value = 0;
 
+    this.lfo = this.audioContext.createOscillator();
+    this.lfo.type = lfoSettings.type;
+    this.lfo.frequency.value = lfoSettings.rate;
+
+    this.lfoGain = this.audioContext.createGain();
+    this.lfoGain.gain.value = lfoSettings.depth;
+
     this.oscillator.connect(this.gateGain);
     this.gateGain.connect(connection);
 
+    this.lfo.connect(this.lfoGain);
+    this.lfoGain.connect(this.oscillator.frequency);
+
+    this.lfo.start();
     this.oscillator.start();
     this.startOscillatorConstructor();
   }
@@ -74,10 +90,14 @@ export default class Oscillator {
     const releaseTime = currentTime + this.envelope.release + this.easing;
     this.gateGain.gain.exponentialRampToValueAtTime(0.0001, releaseTime);
 
+    this.lfo.stop(releaseTime);
+
     this.oscillator.stop(releaseTime);
 
     setTimeout(() => {
+      this.lfo.disconnect();
       this.oscillator.disconnect();
+      this.lfoGain.disconnect();
       this.gateGain.disconnect();
     }, (this.envelope.release + 0.5) * 1000);
   }

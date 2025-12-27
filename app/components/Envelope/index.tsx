@@ -2,23 +2,23 @@ import React from "react";
 import { EnvelopeSettings } from "../../types/types";
 
 interface EnvelopeComponentProps {
-  envelopeVals: EnvelopeSettings;
+  envelopeSettings: EnvelopeSettings;
   handleEnvelopeSettingsChange: (vals: EnvelopeSettings) => void;
 }
 
 export default function Envelope({
-  envelopeVals,
+  envelopeSettings,
   handleEnvelopeSettingsChange,
 }: EnvelopeComponentProps) {
-  const { attack, decay, sustain, release } = envelopeVals;
+  const { attack, decay, sustain, release } = envelopeSettings;
   const onChange = (e) => {
     const prop = e.target.id;
     const val = parseFloat(e.target.value);
-    const nextEnvelopeVals = {
-      ...envelopeVals,
+    const nextEnvelopeSettings = {
+      ...envelopeSettings,
       [prop]: val,
     };
-    handleEnvelopeSettingsChange(nextEnvelopeVals);
+    handleEnvelopeSettingsChange(nextEnvelopeSettings);
   };
   return (
     <div className="">

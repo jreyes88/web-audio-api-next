@@ -5,12 +5,14 @@ import MasterVolume from "./components/MasterVolume";
 import Envelope from "./components/Envelope";
 import Oscillator from "./components/Oscillator";
 import Filter from "./components/Filter";
+import LFO from "./components/LFO";
 import { useSynthEngine } from "./hooks/useSynthEngine";
 import {
   EnvelopeSettings,
   OscillatorSettings,
   SynthSettings,
   FilterSettings,
+  LFOSettings,
 } from "./types/types";
 
 interface OscillatorBank {
@@ -19,7 +21,7 @@ interface OscillatorBank {
 
 export default function SynthPage() {
   const [masterVolume, setMasterVolume] = useState<number>(1);
-  const [envelope, setEnvelope] = useState<EnvelopeSettings>({
+  const [envelopeSettings, setEnvelopeSettings] = useState<EnvelopeSettings>({
     attack: 0.1,
     decay: 0.24,
     sustain: 0.44,
@@ -58,10 +60,16 @@ export default function SynthPage() {
     gain: 0,
   });
 
+  const [lfoSettings, setLFOSettings] = useState<LFOSettings>({
+    type: "sine",
+    rate: 5,
+    depth: 20,
+  });
+
   const settingsRef = useRef<SynthSettings>({
     filterFreq: 350,
     masterVolume: 1,
-    envelope: {
+    envelopeSettings: {
       attack: 0.1,
       decay: 0.24,
       sustain: 0.44,
@@ -96,6 +104,11 @@ export default function SynthPage() {
       Q: 1,
       gain: 0,
     },
+    lfoSettings: {
+      type: "sine",
+      rate: 5,
+      depth: 20,
+    },
   });
 
   const {
@@ -128,8 +141,8 @@ export default function SynthPage() {
   const handleEnvelopeSettingsChange = (
     nextEnvelopeSettings: EnvelopeSettings
   ) => {
-    setEnvelope(nextEnvelopeSettings);
-    settingsRef.current.envelope = nextEnvelopeSettings;
+    setEnvelopeSettings(nextEnvelopeSettings);
+    settingsRef.current.envelopeSettings = nextEnvelopeSettings;
   };
 
   const handleOscillatorSettingsChange = (
@@ -151,6 +164,11 @@ export default function SynthPage() {
     updateFilter(nextFilterSettings);
   };
 
+  const handleLFOSettingsChange = (nextLFOSettings: LFOSettings) => {
+    setLFOSettings(nextLFOSettings);
+    settingsRef.current.lfoSettings = nextLFOSettings;
+  };
+
   return (
     <div className="">
       <h1>Synth</h1>
@@ -159,7 +177,7 @@ export default function SynthPage() {
         handleMasterVolumeChange={handleMasterVolumeChange}
       />
       <Envelope
-        envelopeVals={envelope}
+        envelopeSettings={envelopeSettings}
         handleEnvelopeSettingsChange={handleEnvelopeSettingsChange}
       />
       <Oscillator
@@ -180,6 +198,10 @@ export default function SynthPage() {
       <Filter
         filterSettings={filterSettings}
         handleFilterSettingsChange={handleFilterSettingsChange}
+      />
+      <LFO
+        lfoSettings={lfoSettings}
+        handleLFOSettingsChange={handleLFOSettingsChange}
       />
       <Keyboard onKeyDown={playNote} onKeyUp={stopNote} />
     </div>

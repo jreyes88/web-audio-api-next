@@ -3,12 +3,13 @@ export interface OscillatorConstructorProps {
   type: "sine" | "square" | "sawtooth" | "triangle";
   frequency: number;
   detune: number;
-  envelope: EnvelopeSettings;
+  envelopeSettings: EnvelopeSettings;
   volume: number;
   connection: GainNode;
   easing: number;
   version: number;
   isMuted: boolean;
+  lfoSettings: LFOSettings;
 }
 
 export interface EnvelopeSettings {
@@ -29,12 +30,13 @@ export interface OscillatorSettings {
 export interface SynthSettings {
   filterFreq: number;
   masterVolume: number;
-  envelope: EnvelopeSettings;
+  envelopeSettings: EnvelopeSettings;
   osc1: OscillatorSettings;
   osc2: OscillatorSettings;
   osc3: OscillatorSettings;
   easing: number;
   filterSettings: FilterSettings;
+  lfoSettings: LFOSettings;
 }
 
 export interface FilterSettings {
@@ -43,4 +45,10 @@ export interface FilterSettings {
   detune: number;
   Q: number;
   gain: number;
+}
+
+export interface LFOSettings {
+  type: "sine" | "square" | "sawtooth" | "triangle";
+  rate: number;
+  depth: number;
 }
