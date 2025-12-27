@@ -111,8 +111,8 @@ export function useSynthEngine(
   };
 
   const updateFilter = (settings: FilterSettings) => {
-    if (!filterNode.current) return;
     const ctx = audioCtx.current;
+    if (!ctx || !filterNode.current) return;
     const { currentTime } = ctx;
     filterNode.current.type = settings.type;
     filterNode.current.frequency.setTargetAtTime(
