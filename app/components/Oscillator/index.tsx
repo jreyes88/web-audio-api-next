@@ -19,7 +19,7 @@ export default function Oscillator({
   const uniqueId = useId();
   const { type, octave, detune, volume } = oscillatorSettings;
 
-  const onChange = (e) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const id = e.target.id;
     const prop = id.split("-").pop();
     const val = parseFloat(e.target.value);
@@ -30,7 +30,7 @@ export default function Oscillator({
     handleOscillatorSettingsChange(version, nextOscillatorSettings);
   };
 
-  const onTypeChange = (e) => {
+  const onTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const id = e.target.id;
     const prop = id.split("-").pop();
     const val = e.target.value;

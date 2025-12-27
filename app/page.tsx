@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import Keyboard from "./components/Keyboard";
 import MasterVolume from "./components/MasterVolume";
 import Envelope from "./components/Envelope";
@@ -92,8 +92,26 @@ export default function SynthPage() {
     },
   });
 
-  const { playNote, stopNote, updateFilter, updateMasterVolume } =
-    useSynthEngine(settingsRef);
+  const {
+    playNote: enginePlayNote,
+    stopNote: engineStopNote,
+    updateFilter,
+    updateMasterVolume,
+  } = useSynthEngine(settingsRef);
+
+  const playNote = useCallback(
+    (note: string, freq: number) => {
+      enginePlayNote(note, freq);
+    },
+    [enginePlayNote]
+  );
+
+  const stopNote = useCallback(
+    (note: string) => {
+      engineStopNote(note);
+    },
+    [engineStopNote]
+  );
 
   const handleMasterVolumeChange = (nextMasterVolume: number) => {
     setMasterVolume(nextMasterVolume);
@@ -112,12 +130,13 @@ export default function SynthPage() {
     version: number,
     nextOscillatorSettings: OscillatorSettings
   ) => {
-    const whichOscillator = `osc${version}`;
+    const whichOscillator = `osc${version}` as keyof SynthSettings;
     setOscillators((prev) => ({
       ...prev,
       [whichOscillator]: nextOscillatorSettings,
     }));
-    settingsRef.current[whichOscillator] = nextOscillatorSettings;
+    (settingsRef.current[whichOscillator] as OscillatorSettings) =
+      nextOscillatorSettings;
   };
 
   const handleFilterSettingsChange = (nextFilterSettings: FilterSettings) => {

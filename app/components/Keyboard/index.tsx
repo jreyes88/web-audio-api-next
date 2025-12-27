@@ -4,11 +4,15 @@ import QwertyHancock from "qwerty-hancock";
 
 interface KeyboardProps {
   onKeyDown: (note: string, freq: number) => void;
-  onKeyUp: (note: string, freq: number) => void;
+  onKeyUp: (note: string, freq?: number) => void;
 }
 
 export default function Keyboard({ onKeyDown, onKeyUp }: KeyboardProps) {
   useEffect(() => {
+    const container = document.getElementById("keyboard");
+    if (!container) return;
+    container.innerHTML = "";
+
     const keyboard = new QwertyHancock({
       id: "keyboard",
       width: 908,
@@ -22,8 +26,7 @@ export default function Keyboard({ onKeyDown, onKeyUp }: KeyboardProps) {
     keyboard.keyUp = onKeyUp;
 
     return () => {
-      const kbDiv = document.getElementById("keyboard");
-      if (kbDiv) kbDiv.innerHTML = "";
+      container.innerHTML = "";
     };
   }, [onKeyDown, onKeyUp]);
 

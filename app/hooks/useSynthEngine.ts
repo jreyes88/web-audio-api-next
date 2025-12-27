@@ -1,10 +1,12 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import Oscillator from "../constructors/Oscillator";
-import { FilterSettings } from "../types/types";
+import { FilterSettings, SynthSettings } from "../types/types";
 
-export function useSynthEngine(settingsRef) {
+export function useSynthEngine(
+  settingsRef: React.MutableRefObject<SynthSettings>
+) {
   const audioCtx = useRef<AudioContext | null>(null);
   const masterGain = useRef<GainNode | null>(null);
   const filterNode = useRef<BiquadFilterNode | null>(null);
@@ -118,7 +120,7 @@ export function useSynthEngine(settingsRef) {
     filterNode.current.gain.setTargetAtTime(settings.gain, currentTime, 0.005);
   };
 
-  const updateMasterVolume = (val) => {
+  const updateMasterVolume = (val: number) => {
     if (masterGain.current) {
       masterGain.current.gain.value = val;
     }
