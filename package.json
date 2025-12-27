@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "15.1.3",
-    "qwerty-hancock": "^0.10.0",
+    "next": "16.1.1",
+    "qwerty-hancock": "^0.11.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "sass": "^1.97.1"
@@ -20,6 +20,6 @@
     "@types/node": "25.0.3",
     "@types/react": "19.2.7",
     "eslint": "^9.39.2",
-    "eslint-config-next": "15.1.3"
+    "eslint-config-next": "16.1.1"
   }
 }
