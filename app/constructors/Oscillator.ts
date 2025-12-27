@@ -1,15 +1,15 @@
-import { OscillatorProps, EnvelopeProps } from "../types/types";
+import { OscillatorConstructorProps, EnvelopeSettings } from "../types/types";
 
 export default class Oscillator {
   private audioContext: AudioContext;
   private oscillator: OscillatorNode;
   private gateGain: GainNode;
-  private envelope: EnvelopeProps;
+  private envelope: EnvelopeSettings;
   private easing: number;
   private targetVolume: number;
   public version: number;
 
-  constructor(props: OscillatorProps) {
+  constructor(props: OscillatorConstructorProps) {
     const {
       audioContext,
       type,

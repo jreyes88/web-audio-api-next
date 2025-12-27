@@ -1,16 +1,16 @@
-export interface OscillatorProps {
+export interface OscillatorConstructorProps {
   audioContext: AudioContext;
   type: "sine" | "square" | "sawtooth" | "triangle";
   frequency: number;
   detune: number;
-  envelope: EnvelopeProps;
+  envelope: EnvelopeSettings;
   volume: number;
   connection: GainNode;
   easing: number;
   version: number;
 }
 
-export interface EnvelopeProps {
+export interface EnvelopeSettings {
   attack: number;
   decay: number;
   sustain: number;
@@ -27,7 +27,7 @@ export interface OscillatorSettings {
 export interface SynthSettings {
   filterFreq: number;
   masterVolume: number;
-  envelope: EnvelopeProps;
+  envelope: EnvelopeSettings;
   osc1: OscillatorSettings;
   osc2: OscillatorSettings;
   osc3: OscillatorSettings;

@@ -7,7 +7,7 @@ import Oscillator from "./components/Oscillator";
 import Filter from "./components/Filter";
 import { useSynthEngine } from "./hooks/useSynthEngine";
 import {
-  EnvelopeProps,
+  EnvelopeSettings,
   OscillatorSettings,
   SynthSettings,
   FilterSettings,
@@ -19,7 +19,7 @@ interface OscillatorBank {
 
 export default function SynthPage() {
   const [masterVolume, setMasterVolume] = useState<number>(1);
-  const [envelope, setEnvelope] = useState<EnvelopeProps>({
+  const [envelope, setEnvelope] = useState<EnvelopeSettings>({
     attack: 0.1,
     decay: 0.24,
     sustain: 0.44,
@@ -101,12 +101,17 @@ export default function SynthPage() {
     updateMasterVolume(nextMasterVolume);
   };
 
-  const handleEnvelopeChange = (nextEnvelopeSettings) => {
+  const handleEnvelopeSettingsChange = (
+    nextEnvelopeSettings: EnvelopeSettings
+  ) => {
     setEnvelope(nextEnvelopeSettings);
     settingsRef.current.envelope = nextEnvelopeSettings;
   };
 
-  const handleOscillatorSettingsChange = (version, nextOscillatorSettings) => {
+  const handleOscillatorSettingsChange = (
+    version: number,
+    nextOscillatorSettings: OscillatorSettings
+  ) => {
     const whichOscillator = `osc${version}`;
     setOscillators((prev) => ({
       ...prev,
@@ -115,7 +120,7 @@ export default function SynthPage() {
     settingsRef.current[whichOscillator] = nextOscillatorSettings;
   };
 
-  const handleFilterSettingsChange = (nextFilterSettings) => {
+  const handleFilterSettingsChange = (nextFilterSettings: FilterSettings) => {
     setFilterSettings(nextFilterSettings);
     settingsRef.current.filterSettings = nextFilterSettings;
     updateFilter(nextFilterSettings);
@@ -130,7 +135,7 @@ export default function SynthPage() {
       />
       <Envelope
         envelopeVals={envelope}
-        handleEnvelopeChange={handleEnvelopeChange}
+        handleEnvelopeSettingsChange={handleEnvelopeSettingsChange}
       />
       <Oscillator
         version={1}

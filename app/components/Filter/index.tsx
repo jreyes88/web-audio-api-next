@@ -1,6 +1,5 @@
-"use client";
+import React from "react";
 import { FilterSettings } from "../../types/types";
-import styles from "./Filter.module.scss";
 
 interface FilterComponentProps {
   filterSettings: FilterSettings;
@@ -44,9 +43,9 @@ export default function Filter({
   };
 
   return (
-    <div className={styles["filter"]}>
+    <div className="">
       <h2>Filter</h2>
-      <div className={styles["filter-layout"]}>
+      <div className="">
         <div className="">
           <div className="select">
             <label htmlFor="type">Filter Type</label>

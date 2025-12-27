@@ -1,5 +1,4 @@
-"use client";
-import styles from "./Oscillator.module.scss";
+import React from "react";
 import { useId } from "react";
 import { OscillatorSettings } from "../../types/types";
 
@@ -43,9 +42,9 @@ export default function Oscillator({
   };
 
   return (
-    <div className={`${styles[`oscillator${version}`]}`}>
+    <div className="">
       <h2>Oscillator {version}</h2>
-      <div className={`${styles["selects"]}`}>
+      <div className="">
         <div className="select">
           <label htmlFor={`${uniqueId}-type`}>Wave Type</label>
           <select id={`${uniqueId}-type`} value={type} onChange={onTypeChange}>
@@ -66,7 +65,7 @@ export default function Oscillator({
           </select>
         </div>
       </div>
-      <div className={`${styles["slider"]}`}>
+      <div className="">
         <label htmlFor={`${uniqueId}-detune`}>
           Detune <span className="right">{detune}</span>
         </label>

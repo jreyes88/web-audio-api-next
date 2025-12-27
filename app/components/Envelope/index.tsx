@@ -1,15 +1,14 @@
 import React from "react";
-import { EnvelopeProps } from "../../types/types";
-import styles from "./Envelope.module.scss";
+import { EnvelopeSettings } from "../../types/types";
 
 interface EnvelopeComponentProps {
-  envelopeVals: EnvelopeProps;
-  handleEnvelopeChange: (vals: EnvelopeProps) => void;
+  envelopeVals: EnvelopeSettings;
+  handleEnvelopeSettingsChange: (vals: EnvelopeSettings) => void;
 }
 
 export default function Envelope({
   envelopeVals,
-  handleEnvelopeChange,
+  handleEnvelopeSettingsChange,
 }: EnvelopeComponentProps) {
   const { attack, decay, sustain, release } = envelopeVals;
   const onChange = (e) => {
@@ -19,10 +18,10 @@ export default function Envelope({
       ...envelopeVals,
       [prop]: val,
     };
-    handleEnvelopeChange(nextEnvelopeVals);
+    handleEnvelopeSettingsChange(nextEnvelopeVals);
   };
   return (
-    <div className={styles["envelope"]}>
+    <div className="">
       <h2>Envelope</h2>
       <div className="">
         <label htmlFor="attack">

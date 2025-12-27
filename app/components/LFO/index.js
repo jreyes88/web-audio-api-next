@@ -1,5 +1,3 @@
-"use client";
-
 import { useContext } from "react";
 import { CTX } from "../../context/Store";
 import styles from "./LFO.module.scss";
