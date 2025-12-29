@@ -20,8 +20,8 @@ export default function Keyboard({ onKeyDown, onKeyUp }: KeyboardProps) {
   useEffect(() => {
     const keyboard = new QwertyHancock({
       id: "keyboard",
-      width: 908,
-      height: 150,
+      width: 897,
+      height: 152,
       octaves: 2,
       startNote: "C4",
       activeColour: "#6495ed",
