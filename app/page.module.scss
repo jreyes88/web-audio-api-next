@@ -7,15 +7,21 @@
 }
 
 .synth-layout {
-  margin-top: 20px;
+  background-color: rgb(253, 204, 204);
+  padding: 20px;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-template-rows: repeat(3, 1fr);
   grid-template-areas:
-    "oscillator1 oscillator2 oscillator3 lfo"
-    "filter filter envelope volume"
+    "oscillators oscillators oscillators lfo"
+    "filter filter envelope mastervolume"
     "keyboard keyboard keyboard keyboard";
-  gap: 20px;
-  color: white;
+  gap: 12px;
+  width: 1000px;
   height: 100%;
+}
+
+.oscillators {
+  grid-area: oscillators;
+  display: flex;
+  gap: 12px;
 }
