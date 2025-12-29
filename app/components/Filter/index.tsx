@@ -44,11 +44,13 @@ export default function Filter({
   };
 
   return (
-    <div className="">
-      <h2>Filter</h2>
-      <div className="">
+    <div className={`module ${styles["filter"]}`}>
+      <div className="header">
+        <h2>Filter</h2>
+      </div>
+      <div className="controls">
         <div className="">
-          <div className="select">
+          <div className="select-container">
             <label htmlFor="type">Filter Type</label>
             <select id="type" value={type} onChange={onTypeChange}>
               <option value="lowpass">Lowpass</option>
@@ -58,7 +60,7 @@ export default function Filter({
               <option value="highshelf">Highshelf</option>
             </select>
           </div>
-          <div className="">
+          <div className="range-container">
             <label htmlFor="frequency">
               Frequency <span className="right">{frequency}</span>
             </label>
@@ -70,7 +72,7 @@ export default function Filter({
               max="1000"
             />
           </div>
-          <div className="">
+          <div className="range-container">
             <label htmlFor="detune">
               Detune <span className="right">{detune}</span>
             </label>
@@ -84,9 +86,9 @@ export default function Filter({
             />
           </div>
         </div>
-        <div className="" style={{ marginTop: "auto" }}>
+        <div className="">
           {/* Q is used for Lowpass and Highpass */}
-          <div className="">
+          <div className="range-container">
             <label htmlFor="Q">
               Q <span className="helper"> - Lowpass, Highpass, Notch</span>
               <span className="right">{Q}</span>
@@ -101,9 +103,8 @@ export default function Filter({
               disabled={isLowshelfOrHighshelf(type) === true ? true : false}
             />
           </div>
-
           {/* Gain is used for Lowshelf and Highshelf */}
-          <div className="">
+          <div className="range-container">
             <label htmlFor="gain">
               Gain <span className="helper"> - Lowshelf, Highshelf</span>
               <span className="right">{gain}</span>

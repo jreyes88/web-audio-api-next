@@ -1,6 +1,10 @@
 @use "reset";
 @use "typography";
 
+:root {
+  --border-color: rgb(243, 167, 167);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -36,10 +40,8 @@ input[type="range"] {
   }
 }
 
-.select {
-  label {
-    display: block;
-  }
+.select-container {
+  padding-bottom: 12px;
   select {
     width: 100%;
     padding: 4px 4px;
@@ -69,10 +71,47 @@ input[type="range"] {
   }
 }
 
+.range-container {
+  padding-bottom: 12px;
+  input[type="range"] {
+    background-color: rgb(244, 230, 246);
+  }
+}
+
 label {
   display: flex;
-  padding: 20px 0 2px 0;
+  padding-bottom: 4px;
   .right {
     margin-left: auto;
+  }
+}
+
+.module {
+  border: 1px solid var(--border-color);
+
+  .header {
+    min-height: 26px;
+    background-color: rgb(243, 167, 167);
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    input[type="checkbox"] {
+      margin-left: auto;
+    }
+    label:has(+ input[type="checkbox"]) {
+      position: absolute;
+      overflow: hidden;
+      height: 1px;
+      width: 1px;
+      margin: -1px;
+      padding: 0;
+      border: 0;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+    }
+  }
+
+  .controls {
+    padding: 8px;
   }
 }

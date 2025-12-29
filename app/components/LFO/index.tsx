@@ -33,10 +33,12 @@ export default function LFO({
     handleLFOSettingsChange(nextLFOSettings);
   };
   return (
-    <div className={styles["lfo"]}>
-      <h2>LFO</h2>
-      <div className="">
-        <div className="select">
+    <div className={`module ${styles["lfo"]}`}>
+      <div className="header">
+        <h2>LFO</h2>
+      </div>
+      <div className="controls">
+        <div className="select-container">
           <label htmlFor="lfo-type">Wave Type</label>
           <select id="lfo-type" value={type} onChange={onTypeChange}>
             <option value="sine">Sine</option>
@@ -45,32 +47,34 @@ export default function LFO({
             <option value="triangle">Triangle</option>
           </select>
         </div>
-        <label htmlFor="lfo-rate">
-          Rate <span className="right">{rate}</span>
-        </label>
-        <input
-          type="range"
-          id="lfo-rate"
-          max="5"
-          min="0"
-          step="0.1"
-          value={rate}
-          onChange={onChange}
-        />
-      </div>
-      <div className="">
-        <label htmlFor="lfo-depth">
-          Depth <span className="right">{depth}</span>
-        </label>
-        <input
-          type="range"
-          id="lfo-depth"
-          max="20"
-          min="0"
-          step="1"
-          value={depth}
-          onChange={onChange}
-        />
+        <div className="range-container">
+          <label htmlFor="lfo-rate">
+            Rate <span className="right">{rate}</span>
+          </label>
+          <input
+            type="range"
+            id="lfo-rate"
+            max="5"
+            min="0"
+            step="0.1"
+            value={rate}
+            onChange={onChange}
+          />
+        </div>
+        <div className="range-container">
+          <label htmlFor="lfo-depth">
+            Depth <span className="right">{depth}</span>
+          </label>
+          <input
+            type="range"
+            id="lfo-depth"
+            max="20"
+            min="0"
+            step="1"
+            value={depth}
+            onChange={onChange}
+          />
+        </div>
       </div>
     </div>
   );

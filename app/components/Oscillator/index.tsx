@@ -53,9 +53,9 @@ export default function Oscillator({
   };
 
   return (
-    <div className={styles["oscillator"]}>
-      <div className={styles["oscillator-header"]}>
-        <h2 className="lowercase">Oscillator {version}</h2>
+    <div className={`module ${styles["oscillator"]}`}>
+      <div className="header">
+        <h2>Oscillator {version}</h2>
         <label htmlFor={`${uniqueId}-mute`}>Mute</label>
         <input
           id={`${uniqueId}-mute`}
@@ -64,8 +64,8 @@ export default function Oscillator({
           onChange={onMuteChange}
         />
       </div>
-      <div className={styles["oscillator-controls"]}>
-        <div className="select">
+      <div className="controls">
+        <div className="select-container">
           <label htmlFor={`${uniqueId}-type`}>Wave Type</label>
           <select
             id={`${uniqueId}-type`}
@@ -79,7 +79,7 @@ export default function Oscillator({
             <option value="triangle">Triangle</option>
           </select>
         </div>
-        <div className="select">
+        <div className="select-container">
           <label htmlFor={`${uniqueId}-octave`}>Octave</label>
           <select id={`${uniqueId}-octave`} value={octave} onChange={onChange}>
             <option value="32">32</option>
@@ -89,7 +89,7 @@ export default function Oscillator({
             <option value="2">2</option>
           </select>
         </div>
-        <div className="">
+        <div className="range-container">
           <label htmlFor={`${uniqueId}-detune`}>
             Detune <span className="right">{detune}</span>
           </label>
@@ -102,7 +102,7 @@ export default function Oscillator({
             onChange={onChange}
           />
         </div>
-        <div className="">
+        <div className="range-container">
           <label htmlFor={`${uniqueId}-volume`}>
             Volume <span className="right">{volume}</span>
           </label>

@@ -22,63 +22,67 @@ export default function Envelope({
     handleEnvelopeSettingsChange(nextEnvelopeSettings);
   };
   return (
-    <div className="">
-      <h2>Envelope</h2>
-      <div className="">
-        <label htmlFor="attack">
-          Attack <span className="right">{attack}</span>
-        </label>
-        <input
-          onChange={onChange}
-          type="range"
-          value={attack}
-          min="0"
-          max="2"
-          step="0.1"
-          id="attack"
-        />
+    <div className={`module ${styles["envelope"]}`}>
+      <div className="header">
+        <h2>Envelope</h2>
       </div>
-      <div className="">
-        <label htmlFor="decay">
-          Decay <span className="right">{decay}</span>
-        </label>
-        <input
-          onChange={onChange}
-          type="range"
-          value={decay}
-          min="0"
-          max="1"
-          step="0.01"
-          id="decay"
-        />
-      </div>
-      <div className="">
-        <label htmlFor="sustain">
-          Sustain <span className="right">{sustain}</span>
-        </label>
-        <input
-          onChange={onChange}
-          type="range"
-          value={sustain}
-          min="0"
-          max="1"
-          step="0.01"
-          id="sustain"
-        />
-      </div>
-      <div className="">
-        <label htmlFor="release">
-          Release <span className="right">{release}</span>
-        </label>
-        <input
-          onChange={onChange}
-          type="range"
-          value={release}
-          min="0"
-          max="2"
-          step="0.01"
-          id="release"
-        />
+      <div className="controls">
+        <div className="range-container">
+          <label htmlFor="attack">
+            Attack <span className="right">{attack}</span>
+          </label>
+          <input
+            onChange={onChange}
+            type="range"
+            value={attack}
+            min="0"
+            max="2"
+            step="0.1"
+            id="attack"
+          />
+        </div>
+        <div className="range-container">
+          <label htmlFor="decay">
+            Decay <span className="right">{decay}</span>
+          </label>
+          <input
+            onChange={onChange}
+            type="range"
+            value={decay}
+            min="0"
+            max="1"
+            step="0.01"
+            id="decay"
+          />
+        </div>
+        <div className="range-container">
+          <label htmlFor="sustain">
+            Sustain <span className="right">{sustain}</span>
+          </label>
+          <input
+            onChange={onChange}
+            type="range"
+            value={sustain}
+            min="0"
+            max="1"
+            step="0.01"
+            id="sustain"
+          />
+        </div>
+        <div className="range-container">
+          <label htmlFor="release">
+            Release <span className="right">{release}</span>
+          </label>
+          <input
+            onChange={onChange}
+            type="range"
+            value={release}
+            min="0"
+            max="2"
+            step="0.01"
+            id="release"
+          />
+        </div>
       </div>
     </div>
   );

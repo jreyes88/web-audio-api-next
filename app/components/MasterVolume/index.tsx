@@ -14,21 +14,25 @@ export default function MasterVolume({
     handleMasterVolumeChange(parseFloat(e.target.value));
   };
   return (
-    <div className={styles["master-volume"]}>
-      <h2>Volume</h2>
-      <div className="">
-        <label htmlFor="volume">
-          Master Volume <span className="right">{masterVolume}</span>
-        </label>
-        <input
-          type="range"
-          id="volume"
-          max="2"
-          min="0"
-          step="0.1"
-          value={masterVolume}
-          onChange={onChange}
-        />
+    <div className={`module ${styles["master-volume"]}`}>
+      <div className="header">
+        <h2>Volume</h2>
+      </div>
+      <div className="controls">
+        <div className="range-container">
+          <label htmlFor="volume">
+            Master Volume <span className="right">{masterVolume}</span>
+          </label>
+          <input
+            type="range"
+            id="volume"
+            max="2"
+            min="0"
+            step="0.1"
+            value={masterVolume}
+            onChange={onChange}
+          />
+        </div>
       </div>
     </div>
   );
