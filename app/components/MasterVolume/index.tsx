@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "./MasterVolume.module.scss";
 
 interface MasterVolumeProps {
   masterVolume: number;
@@ -13,7 +14,7 @@ export default function MasterVolume({
     handleMasterVolumeChange(parseFloat(e.target.value));
   };
   return (
-    <div className="">
+    <div className={styles["master-volume"]}>
       <h2>Volume</h2>
       <div className="">
         <label htmlFor="volume">

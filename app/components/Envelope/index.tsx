@@ -1,5 +1,6 @@
 import React from "react";
 import { EnvelopeSettings } from "../../types/types";
+import styles from "./Envelope.module.scss";
 
 interface EnvelopeComponentProps {
   envelopeSettings: EnvelopeSettings;

@@ -13,18 +13,8 @@ body {
 body {
   display: flex;
   flex-direction: column;
-  max-width: 908px;
-  margin-left: auto;
-  margin-right: auto;
   font-size: 12px;
-}
-h2 {
-  font-size: 18px;
-}
-
-label {
-  display: block;
-  margin-top: 8px;
+  text-transform: lowercase;
 }
 
 input[type="range"] {
@@ -51,13 +41,37 @@ input[type="range"] {
     display: block;
   }
   select {
-    margin-top: 4px;
-    display: block;
+    width: 100%;
+    padding: 4px 4px;
+    font-size: 12px;
+    line-height: 1.5;
+    border: 0px solid transparent;
+    border-radius: 0;
+    background-color: rgb(244, 230, 246);
+    cursor: pointer;
+    color: #333;
+    font-family: var(--font-sans-serif);
+    font-size: 12px;
+    text-transform: lowercase;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='%23929a9b' d='M443.5 162.6l-7.1-7.1c-4.7-4.7-12.3-4.7-17 0L224 351 28.5 155.5c-4.7-4.7-12.3-4.7-17 0l-7.1 7.1c-4.7 4.7-4.7 12.3 0 17l211 211.1c4.7 4.7 12.3 4.7 17 0l211-211.1c4.8-4.7 4.8-12.3.1-17z'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat, repeat;
+    background-position: right 0.7em top 50%;
+    background-size: 1em;
+    &:hover {
+      border-color: #aaa;
+    }
+    &:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    }
   }
 }
 
 label {
   display: flex;
+  padding: 20px 0 2px 0;
   .right {
     margin-left: auto;
   }

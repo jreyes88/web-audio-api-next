@@ -14,6 +14,7 @@ import {
   FilterSettings,
   LFOSettings,
 } from "./types/types";
+import styles from "./page.module.scss";
 
 interface OscillatorBank {
   [key: string]: OscillatorSettings;
@@ -170,40 +171,45 @@ export default function SynthPage() {
   };
 
   return (
-    <div className="">
-      <h1>Synth</h1>
-      <MasterVolume
-        masterVolume={masterVolume}
-        handleMasterVolumeChange={handleMasterVolumeChange}
-      />
-      <Envelope
-        envelopeSettings={envelopeSettings}
-        handleEnvelopeSettingsChange={handleEnvelopeSettingsChange}
-      />
-      <Oscillator
-        version={1}
-        oscillatorSettings={oscillators.osc1}
-        handleOscillatorSettingsChange={handleOscillatorSettingsChange}
-      />
-      <Oscillator
-        version={2}
-        oscillatorSettings={oscillators.osc2}
-        handleOscillatorSettingsChange={handleOscillatorSettingsChange}
-      />
-      <Oscillator
-        version={3}
-        oscillatorSettings={oscillators.osc3}
-        handleOscillatorSettingsChange={handleOscillatorSettingsChange}
-      />
-      <Filter
-        filterSettings={filterSettings}
-        handleFilterSettingsChange={handleFilterSettingsChange}
-      />
-      <LFO
-        lfoSettings={lfoSettings}
-        handleLFOSettingsChange={handleLFOSettingsChange}
-      />
-      <Keyboard onKeyDown={playNote} onKeyUp={stopNote} />
-    </div>
+    <main className="">
+      <h1 className={styles["heading"]}>Synth</h1>
+      <div className={`${styles["synth-layout"]}`}>
+        <div className={styles["oscillators"]}>
+          <Oscillator
+            version={1}
+            oscillatorSettings={oscillators.osc1}
+            handleOscillatorSettingsChange={handleOscillatorSettingsChange}
+          />
+          <Oscillator
+            version={2}
+            oscillatorSettings={oscillators.osc2}
+            handleOscillatorSettingsChange={handleOscillatorSettingsChange}
+          />
+          <Oscillator
+            version={3}
+            oscillatorSettings={oscillators.osc3}
+            handleOscillatorSettingsChange={handleOscillatorSettingsChange}
+          />
+        </div>
+        <LFO
+          lfoSettings={lfoSettings}
+          handleLFOSettingsChange={handleLFOSettingsChange}
+        />
+        <Filter
+          filterSettings={filterSettings}
+          handleFilterSettingsChange={handleFilterSettingsChange}
+        />
+
+        <Envelope
+          envelopeSettings={envelopeSettings}
+          handleEnvelopeSettingsChange={handleEnvelopeSettingsChange}
+        />
+        <MasterVolume
+          masterVolume={masterVolume}
+          handleMasterVolumeChange={handleMasterVolumeChange}
+        />
+        <Keyboard onKeyDown={playNote} onKeyUp={stopNote} />
+      </div>
+    </main>
   );
 }

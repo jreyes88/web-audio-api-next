@@ -1,6 +1,7 @@
 import React from "react";
 import { useId } from "react";
 import { OscillatorSettings } from "../../types/types";
+import styles from "./Oscillator.module.scss";
 
 interface OscillatorComponentProps {
   version: number;
@@ -52,15 +53,26 @@ export default function Oscillator({
   };
 
   return (
-    <div
-      className=""
-      style={{ borderTop: "1px solid red", borderBottom: "1px solid red" }}
-    >
-      <h2>Oscillator {version}</h2>
-      <div className="">
+    <div className={styles["oscillator"]}>
+      <div className={styles["oscillator-header"]}>
+        <h2 className="lowercase">Oscillator {version}</h2>
+        <label htmlFor={`${uniqueId}-mute`}>Mute</label>
+        <input
+          id={`${uniqueId}-mute`}
+          type="checkbox"
+          checked={isMuted}
+          onChange={onMuteChange}
+        />
+      </div>
+      <div className={styles["oscillator-controls"]}>
         <div className="select">
           <label htmlFor={`${uniqueId}-type`}>Wave Type</label>
-          <select id={`${uniqueId}-type`} value={type} onChange={onTypeChange}>
+          <select
+            id={`${uniqueId}-type`}
+            value={type}
+            onChange={onTypeChange}
+            className="select"
+          >
             <option value="sine">Sine</option>
             <option value="square">Square</option>
             <option value="sawtooth">Sawtooth</option>
@@ -77,42 +89,33 @@ export default function Oscillator({
             <option value="2">2</option>
           </select>
         </div>
-      </div>
-      <div className="">
-        <label htmlFor={`${uniqueId}-detune`}>
-          Detune <span className="right">{detune}</span>
-        </label>
-        <input
-          type="range"
-          min="-10"
-          max="10"
-          id={`${uniqueId}-detune`}
-          value={detune}
-          onChange={onChange}
-        />
-      </div>
-      <div className="">
-        <label htmlFor={`${uniqueId}-volume`}>
-          Volume <span className="right">{volume}</span>
-        </label>
-        <input
-          type="range"
-          id={`${uniqueId}-volume`}
-          max="0.4"
-          min="0.3"
-          step="0.01"
-          value={volume}
-          onChange={onChange}
-        />
-      </div>
-      <div className="">
-        <label htmlFor={`${uniqueId}-mute`}>Mute</label>
-        <input
-          id={`${uniqueId}-mute`}
-          type="checkbox"
-          checked={isMuted}
-          onChange={onMuteChange}
-        />
+        <div className="">
+          <label htmlFor={`${uniqueId}-detune`}>
+            Detune <span className="right">{detune}</span>
+          </label>
+          <input
+            type="range"
+            min="-10"
+            max="10"
+            id={`${uniqueId}-detune`}
+            value={detune}
+            onChange={onChange}
+          />
+        </div>
+        <div className="">
+          <label htmlFor={`${uniqueId}-volume`}>
+            Volume <span className="right">{volume}</span>
+          </label>
+          <input
+            type="range"
+            id={`${uniqueId}-volume`}
+            max="0.4"
+            min="0.3"
+            step="0.01"
+            value={volume}
+            onChange={onChange}
+          />
+        </div>
       </div>
     </div>
   );

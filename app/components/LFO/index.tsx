@@ -1,5 +1,6 @@
 import React from "react";
 import { LFOSettings } from "../../types/types";
+import styles from "./LFO.module.scss";
 
 interface LFOComponentProps {
   lfoSettings: LFOSettings;
@@ -32,7 +33,7 @@ export default function LFO({
     handleLFOSettingsChange(nextLFOSettings);
   };
   return (
-    <div className="">
+    <div className={styles["lfo"]}>
       <h2>LFO</h2>
       <div className="">
         <div className="select">

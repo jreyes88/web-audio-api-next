@@ -1,0 +1,35 @@
+.oscillator {
+  flex: 1;
+  border: 1px solid rgb(243, 167, 167);
+  .oscillator-header {
+    background-color: rgb(243, 167, 167);
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    label {
+      display: none;
+    }
+    input {
+      margin-left: auto;
+    }
+  }
+}
+
+.oscillator-controls {
+  padding: 8px;
+}
+
+.oscillator1 {
+  grid-area: oscillator1;
+  background-color: rgb(240, 243, 218);
+}
+
+.oscillator2 {
+  grid-area: oscillator2;
+  background-color: rgb(240, 243, 218);
+}
+
+.oscillator3 {
+  grid-area: oscillator3;
+  background-color: rgb(240, 243, 218);
+}

@@ -1,5 +1,6 @@
 import React from "react";
 import { FilterSettings } from "../../types/types";
+import styles from "./Filter.module.scss";
 
 interface FilterComponentProps {
   filterSettings: FilterSettings;
