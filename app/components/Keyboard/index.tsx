@@ -36,5 +36,9 @@ export default function Keyboard({ onKeyDown, onKeyUp }: KeyboardProps) {
     };
   }, []);
 
-  return <div className={styles["keyboard"]} id="keyboard" />;
+  return (
+    <div className={styles["keyboard-container"]}>
+      <div id="keyboard" />
+    </div>
+  );
 }

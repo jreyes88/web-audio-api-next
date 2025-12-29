@@ -64,7 +64,7 @@ export default function SynthPage() {
   const [lfoSettings, setLFOSettings] = useState<LFOSettings>({
     type: "sine",
     rate: 5,
-    depth: 20,
+    depth: 4,
   });
 
   const settingsRef = useRef<SynthSettings>({
@@ -108,7 +108,7 @@ export default function SynthPage() {
     lfoSettings: {
       type: "sine",
       rate: 5,
-      depth: 20,
+      depth: 4,
     },
   });
 
