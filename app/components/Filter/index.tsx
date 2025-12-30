@@ -13,6 +13,23 @@ export default function Filter({
 }: FilterComponentProps) {
   const { type, frequency, detune, Q, gain } = filterSettings;
 
+  const MIN_FREQ = 20;
+  const MAX_FREQ = 18000;
+
+  const toLog = (val: number) => {
+    const minF = Math.log(MIN_FREQ);
+    const maxF = Math.log(MAX_FREQ);
+    const scale = maxF - minF;
+    return Math.round(Math.exp(minF + scale * val));
+  };
+
+  const fromLog = (freq: number) => {
+    const minF = Math.log(MIN_FREQ);
+    const maxF = Math.log(MAX_FREQ);
+    const scale = maxF - minF;
+    return (Math.log(freq) - minF) / scale;
+  };
+
   function isLowshelfOrHighshelf(type) {
     if (type === "lowshelf") {
       return true;
@@ -35,7 +52,12 @@ export default function Filter({
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const prop = e.target.id;
-    const val = parseFloat(e.target.value);
+    let val = parseFloat(e.target.value);
+
+    if (prop === "frequency") {
+      val = toLog(val);
+    }
+
     const nextFilterSettings = {
       ...filterSettings,
       [prop]: val,
@@ -68,9 +90,10 @@ export default function Filter({
               onChange={onChange}
               type="range"
               id="frequency"
-              value={frequency}
-              min="20"
-              max="18000"
+              value={fromLog(frequency)}
+              min="0"
+              max="1"
+              step="0.001"
             />
           </div>
           <div className="range-container">
