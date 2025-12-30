@@ -28,7 +28,6 @@ export interface OscillatorSettings {
 }
 
 export interface SynthSettings {
-  filterFreq: number;
   masterVolume: number;
   envelopeSettings: EnvelopeSettings;
   osc1: OscillatorSettings;
