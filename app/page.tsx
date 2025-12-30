@@ -1,11 +1,11 @@
 "use client";
 import React, { useState, useRef, useCallback } from "react";
-import Keyboard from "./components/Keyboard";
-import MasterVolume from "./components/MasterVolume";
-import Envelope from "./components/Envelope";
 import Oscillator from "./components/Oscillator";
-import Filter from "./components/Filter";
 import VolumeLFO from "./components/VolumeLFO";
+import Filter from "./components/Filter";
+import Envelope from "./components/Envelope";
+import Visualizer from "./components/Visualizer";
+import Keyboard from "./components/Keyboard";
 import { useSynthEngine } from "./hooks/useSynthEngine";
 import {
   EnvelopeSettings,
@@ -68,7 +68,6 @@ export default function SynthPage() {
   });
 
   const settingsRef = useRef<SynthSettings>({
-    filterFreq: 350,
     masterVolume: 1,
     envelopeSettings: {
       attack: 0.1,
@@ -117,6 +116,7 @@ export default function SynthPage() {
     stopNote: engineStopNote,
     updateFilter,
     updateMasterVolume,
+    analyser,
   } = useSynthEngine(settingsRef);
 
   const playNote = useCallback(
@@ -206,6 +206,7 @@ export default function SynthPage() {
           envelopeSettings={envelopeSettings}
           handleEnvelopeSettingsChange={handleEnvelopeSettingsChange}
         />
+        <Visualizer analyser={analyser} />
         <Keyboard onKeyDown={playNote} onKeyUp={stopNote} />
       </div>
     </main>

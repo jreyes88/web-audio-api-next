@@ -69,7 +69,8 @@ export default function Filter({
               type="range"
               id="frequency"
               value={frequency}
-              max="1000"
+              min="20"
+              max="20000"
             />
           </div>
           <div className="range-container">
