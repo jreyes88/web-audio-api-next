@@ -1,7 +1,18 @@
 .visualizer {
   grid-area: visualizer;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.canvas-container {
+  flex: 1;
+  min-height: 0;
+  position: relative;
 }
 
 .canvas {
   display: block;
+  height: 100%;
+  width: 100%;
 }

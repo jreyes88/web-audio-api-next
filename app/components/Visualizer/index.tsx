@@ -8,7 +8,7 @@ export default function Visualizer({
   analyser: AnalyserNode | null;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const requestRef = useRef<number>();
+  const requestRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!analyser || !canvasRef.current) return;
@@ -80,7 +80,7 @@ export default function Visualizer({
 
     draw();
     return () => {
-      if (requestRef.current) {
+      if (requestRef.current !== null) {
         cancelAnimationFrame(requestRef.current);
       }
     };
@@ -89,13 +89,9 @@ export default function Visualizer({
   return (
     <div className={`module ${styles["visualizer"]}`}>
       <div className="header">Oscilloscope</div>
-      <div className="">
-        <canvas
-          ref={canvasRef}
-          className={styles["canvas"]}
-          width={454}
-          height={275}
-        />
+
+      <div className={styles["canvas-container"]}>
+        <canvas ref={canvasRef} className={styles["canvas"]} />
       </div>
     </div>
   );

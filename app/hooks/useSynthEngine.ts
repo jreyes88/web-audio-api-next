@@ -10,7 +10,6 @@ export function useSynthEngine(
   const audioCtx = useRef<AudioContext | null>(null);
   const masterGain = useRef<GainNode | null>(null);
   const filterNode = useRef<BiquadFilterNode | null>(null);
-  const analyserNode = useRef<AnalyserNode | null>(null);
   const activeNotes = useRef(new Map());
 
   const [analyserInstance, setAnalyserInstance] = useState<AnalyserNode | null>(
@@ -45,15 +44,15 @@ export function useSynthEngine(
       compressor.attack.setValueAtTime(0, audioCtx.current.currentTime);
       compressor.release.setValueAtTime(0.25, audioCtx.current.currentTime);
 
-      analyserNode.current = audioCtx.current.createAnalyser();
-      analyserNode.current.fftSize = 2048;
+      const analyser = audioCtx.current.createAnalyser();
+      analyser.fftSize = 2048;
 
       masterGain.current.connect(filterNode.current);
       filterNode.current.connect(compressor);
-      compressor.connect(analyserNode.current);
-      analyserNode.current.connect(audioCtx.current.destination);
+      compressor.connect(analyser);
+      analyser.connect(audioCtx.current.destination);
 
-      setAnalyserInstance(analyserNode.current);
+      setAnalyserInstance(analyser);
     }
     return () => {
       audioCtx.current?.close();
@@ -67,7 +66,6 @@ export function useSynthEngine(
     if (ctx.state === "suspended") ctx.resume();
 
     const s = settingsRef.current;
-    console.log(s);
 
     filterNode.current.frequency.setTargetAtTime(
       s.filterSettings.frequency,
@@ -160,6 +158,6 @@ export function useSynthEngine(
     stopNote,
     updateFilter,
     updateMasterVolume,
-    analyser: analyserNode.current,
+    analyser: analyserInstance,
   };
 }
