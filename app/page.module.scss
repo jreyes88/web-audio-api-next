@@ -10,11 +10,11 @@
   background-color: rgb(253, 204, 204);
   padding: 20px;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   grid-template-areas:
-    "oscillators oscillators oscillators lfo"
-    "filter envelope visualizer visualizer"
-    "keyboard keyboard keyboard keyboard";
+    "oscillators oscillators oscillators lfo gainenvelope"
+    "filter filterenvelope visualizer visualizer visualizer"
+    "keyboard keyboard keyboard keyboard keyboard";
   gap: 12px;
   width: 1000px;
   height: 100%;

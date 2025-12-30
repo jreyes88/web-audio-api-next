@@ -5,11 +5,13 @@ import styles from "./Envelope.module.scss";
 interface EnvelopeComponentProps {
   envelopeSettings: EnvelopeSettings;
   handleEnvelopeSettingsChange: (vals: EnvelopeSettings) => void;
+  variant: string;
 }
 
 export default function Envelope({
   envelopeSettings,
   handleEnvelopeSettingsChange,
+  variant,
 }: EnvelopeComponentProps) {
   const { attack, decay, sustain, release } = envelopeSettings;
   const onChange = (e) => {
@@ -21,10 +23,13 @@ export default function Envelope({
     };
     handleEnvelopeSettingsChange(nextEnvelopeSettings);
   };
+
   return (
-    <div className={`module ${styles["envelope"]}`}>
+    <div
+      className={`module ${styles[`${variant.toLocaleLowerCase()}-envelope`]}`}
+    >
       <div className="header">
-        <h2>Envelope</h2>
+        <h2>{variant} envelope</h2>
       </div>
       <div className="controls">
         <div className="range-container">

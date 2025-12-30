@@ -59,6 +59,13 @@ export default function SynthPage() {
     detune: 0,
     Q: 1,
     gain: 0,
+    filterEnvAmount: 5000,
+    filterEnvelope: {
+      attack: 0.1,
+      decay: 0.2,
+      sustain: 0.2,
+      release: 0.5,
+    },
   });
 
   const [lfoSettings, setLFOSettings] = useState<LFOSettings>({
@@ -103,6 +110,13 @@ export default function SynthPage() {
       detune: 0,
       Q: 1,
       gain: 0,
+      filterEnvAmount: 5000,
+      filterEnvelope: {
+        attack: 0.1,
+        decay: 0.2,
+        sustain: 0.2,
+        release: 0.5,
+      },
     },
     lfoSettings: {
       type: "sine",
@@ -205,6 +219,17 @@ export default function SynthPage() {
         <Envelope
           envelopeSettings={envelopeSettings}
           handleEnvelopeSettingsChange={handleEnvelopeSettingsChange}
+          variant="Gain"
+        />
+        <Envelope
+          variant="Filter"
+          envelopeSettings={filterSettings.filterEnvelope}
+          handleEnvelopeSettingsChange={(nextEnv) => {
+            handleFilterSettingsChange({
+              ...filterSettings,
+              filterEnvelope: nextEnv,
+            });
+          }}
         />
         <Visualizer analyser={analyser} />
         <Keyboard onKeyDown={playNote} onKeyUp={stopNote} />

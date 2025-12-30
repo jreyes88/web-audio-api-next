@@ -11,7 +11,7 @@ export default function Filter({
   filterSettings,
   handleFilterSettingsChange,
 }: FilterComponentProps) {
-  const { type, frequency, detune, Q, gain } = filterSettings;
+  const { type, frequency, detune, Q, gain, filterEnvAmount } = filterSettings;
 
   const MIN_FREQ = 20;
   const MAX_FREQ = 18000;
@@ -141,6 +141,22 @@ export default function Filter({
               value={gain}
               step="0.1"
               disabled={isLowshelfOrHighshelf(type) === true ? false : true}
+            />
+          </div>
+        </div>
+        <div className="">
+          <div className="range-container">
+            <label htmlFor="filterEnvAmount">
+              Env Amount <span className="right">{filterEnvAmount}</span>
+            </label>
+            <input
+              type="range"
+              id="filterEnvAmount"
+              min="0"
+              max="10000"
+              step="100"
+              value={filterEnvAmount}
+              onChange={onChange}
             />
           </div>
         </div>

@@ -10,6 +10,7 @@ export interface OscillatorConstructorProps {
   version: number;
   isMuted: boolean;
   lfoSettings: LFOSettings;
+  filterSettings: FilterSettings;
 }
 
 export interface EnvelopeSettings {
@@ -44,6 +45,8 @@ export interface FilterSettings {
   detune: number;
   Q: number;
   gain: number;
+  filterEnvAmount: number;
+  filterEnvelope: EnvelopeSettings;
 }
 
 export interface LFOSettings {

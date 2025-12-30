@@ -1,10 +1,16 @@
-import { OscillatorConstructorProps, EnvelopeSettings } from "../types/types";
+import {
+  OscillatorConstructorProps,
+  EnvelopeSettings,
+  FilterSettings,
+} from "../types/types";
 
 export default class Oscillator {
   private audioContext: AudioContext;
   private oscillator: OscillatorNode;
   private gateGain: GainNode;
+  public filterNode: BiquadFilterNode;
   private envelope: EnvelopeSettings;
+  private filterSettings: FilterSettings;
   private easing: number;
   private targetVolume: number;
   public version: number;
@@ -18,6 +24,7 @@ export default class Oscillator {
       frequency,
       detune,
       envelopeSettings,
+      filterSettings,
       volume,
       connection,
       easing,
@@ -30,6 +37,7 @@ export default class Oscillator {
     this.audioContext = audioContext;
     this.easing = easing;
     this.targetVolume = isMuted ? 0 : volume;
+    this.filterSettings = filterSettings;
 
     this.envelope = envelopeSettings || {
       attack: 0.005,
@@ -43,6 +51,11 @@ export default class Oscillator {
     this.oscillator.detune.value = detune;
     this.oscillator.type = type;
 
+    this.filterNode = this.audioContext.createBiquadFilter();
+    this.filterNode.type = filterSettings.type;
+    this.filterNode.Q.value = filterSettings.Q;
+    this.filterNode.gain.value = filterSettings.gain;
+
     this.gateGain = this.audioContext.createGain();
     this.gateGain.gain.value = 0;
 
@@ -53,7 +66,8 @@ export default class Oscillator {
     this.lfoGain = this.audioContext.createGain();
     this.lfoGain.gain.value = lfoSettings.depth;
 
-    this.oscillator.connect(this.gateGain);
+    this.oscillator.connect(this.filterNode);
+    this.filterNode.connect(this.gateGain);
     this.gateGain.connect(connection);
 
     this.lfo.connect(this.lfoGain);
@@ -65,6 +79,8 @@ export default class Oscillator {
   }
   startOscillatorConstructor(): void {
     const { currentTime } = this.audioContext;
+    const s = this.filterSettings;
+    const fEnv = s.filterEnvelope;
 
     this.gateGain.gain.cancelScheduledValues(currentTime);
     this.gateGain.gain.setValueAtTime(0, currentTime + this.easing);
@@ -78,25 +94,60 @@ export default class Oscillator {
       this.targetVolume * this.envelope.sustain,
       currentTime + this.envelope.attack + this.envelope.decay + this.easing
     );
+
+    const baseFreq = s.frequency;
+    const peakFreq = Math.min(baseFreq + s.filterEnvAmount, 20000);
+    const sustainFreq = Math.min(
+      baseFreq + s.filterEnvAmount * fEnv.sustain,
+      20000
+    );
+
+    this.filterNode.frequency.cancelScheduledValues(currentTime);
+    this.filterNode.frequency.setValueAtTime(
+      baseFreq,
+      currentTime + this.easing
+    );
+
+    this.filterNode.frequency.linearRampToValueAtTime(
+      peakFreq,
+      currentTime + fEnv.attack + this.easing
+    );
+
+    this.filterNode.frequency.exponentialRampToValueAtTime(
+      Math.max(20, sustainFreq),
+      currentTime + fEnv.attack + fEnv.decay + this.easing
+    );
   }
   stopOscillatorConstructor(): void {
     const { currentTime } = this.audioContext;
+    const fEnv = this.filterSettings.filterEnvelope;
 
     this.gateGain.gain.cancelScheduledValues(currentTime);
-    this.gateGain.gain.setValueAtTime(this.gateGain.gain.value, currentTime);
+    this.gateGain.gain.setTargetAtTime(
+      0,
+      currentTime,
+      this.envelope.release / 4
+    );
 
-    const releaseTime = currentTime + this.envelope.release + this.easing;
-    this.gateGain.gain.exponentialRampToValueAtTime(0.0001, releaseTime);
+    this.filterNode.frequency.cancelScheduledValues(currentTime);
+    this.filterNode.frequency.setTargetAtTime(
+      this.filterSettings.frequency,
+      currentTime,
+      fEnv.release / 4
+    );
 
-    this.lfo.stop(releaseTime);
+    const releaseDuration = Math.max(this.envelope.release, fEnv.release);
+    const stopTime = currentTime + releaseDuration + this.easing;
 
-    this.oscillator.stop(releaseTime);
+    this.lfo.stop(stopTime);
+    this.oscillator.stop(stopTime);
 
     setTimeout(() => {
       this.lfo.disconnect();
       this.oscillator.disconnect();
       this.lfoGain.disconnect();
       this.gateGain.disconnect();
-    }, (this.envelope.release + 0.5) * 1000);
+      this.filterNode.disconnect();
+    }, (releaseDuration + 0.5) * 1000);
   }
 }

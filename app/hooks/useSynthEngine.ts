@@ -9,7 +9,6 @@ export function useSynthEngine(
 ) {
   const audioCtx = useRef<AudioContext | null>(null);
   const masterGain = useRef<GainNode | null>(null);
-  const filterNode = useRef<BiquadFilterNode | null>(null);
   const activeNotes = useRef(new Map());
 
   const [analyserInstance, setAnalyserInstance] = useState<AnalyserNode | null>(
@@ -34,8 +33,6 @@ export function useSynthEngine(
         (window as any).webkitAudioContext)();
 
       masterGain.current = audioCtx.current.createGain();
-      filterNode.current = audioCtx.current.createBiquadFilter();
-      filterNode.current.type = "lowpass";
 
       const compressor = audioCtx.current.createDynamicsCompressor();
       compressor.threshold.setValueAtTime(-12, audioCtx.current.currentTime);
@@ -47,8 +44,7 @@ export function useSynthEngine(
       const analyser = audioCtx.current.createAnalyser();
       analyser.fftSize = 2048;
 
-      masterGain.current.connect(filterNode.current);
-      filterNode.current.connect(compressor);
+      masterGain.current.connect(compressor);
       compressor.connect(analyser);
       analyser.connect(audioCtx.current.destination);
 
@@ -62,7 +58,7 @@ export function useSynthEngine(
 
   const playNote = (note: string, frequency: number) => {
     const ctx = audioCtx.current;
-    if (!ctx || !masterGain.current || !filterNode.current) return;
+    if (!ctx || !masterGain.current) return;
     if (ctx.state === "suspended") ctx.resume();
 
     const s = settingsRef.current;
@@ -78,6 +74,7 @@ export function useSynthEngine(
         detune: s.osc1.detune,
         envelopeSettings: s.envelopeSettings,
         volume: s.osc1.volume / 3,
+        filterSettings: s.filterSettings,
         connection: masterGain.current,
         easing: s.easing,
         version: 1,
@@ -92,6 +89,7 @@ export function useSynthEngine(
         detune: s.osc2.detune,
         envelopeSettings: s.envelopeSettings,
         volume: s.osc2.volume / 3,
+        filterSettings: s.filterSettings,
         connection: masterGain.current,
         easing: s.easing,
         version: 2,
@@ -106,6 +104,7 @@ export function useSynthEngine(
         detune: s.osc3.detune,
         envelopeSettings: s.envelopeSettings,
         volume: s.osc3.volume / 3,
+        filterSettings: s.filterSettings,
         connection: masterGain.current,
         easing: s.easing,
         version: 3,
@@ -126,20 +125,22 @@ export function useSynthEngine(
 
   const updateFilter = (settings: FilterSettings) => {
     const ctx = audioCtx.current;
-    if (!ctx || !filterNode.current) return;
+    if (!ctx) return;
     const { currentTime } = ctx;
 
-    const safeFreq = Math.min(Math.max(settings.frequency, 20), 18000);
+    activeNotes.current.forEach((oscs: Oscillator[]) => {
+      oscs.forEach((osc) => {
+        if (osc.filterNode) {
+          const safeFreq = Math.min(Math.max(settings.frequency, 20), 18000);
 
-    filterNode.current.type = settings.type;
-    filterNode.current.frequency.setTargetAtTime(safeFreq, currentTime, 0.02);
-    filterNode.current.detune.setTargetAtTime(
-      settings.detune,
-      currentTime,
-      0.005
-    );
-    filterNode.current.Q.setTargetAtTime(settings.Q, currentTime, 0.005);
-    filterNode.current.gain.setTargetAtTime(settings.gain, currentTime, 0.005);
+          osc.filterNode.type = settings.type;
+          osc.filterNode.Q.setTargetAtTime(settings.Q, currentTime, 0.02);
+          osc.filterNode.gain.setTargetAtTime(settings.gain, currentTime, 0.02);
+
+          osc.filterNode.frequency.setTargetAtTime(safeFreq, currentTime, 0.02);
+        }
+      });
+    });
   };
 
   const updateMasterVolume = (val: number) => {
