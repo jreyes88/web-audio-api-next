@@ -137,7 +137,7 @@ export function useSynthEngine(
     const safeFreq = Math.min(Math.max(settings.frequency, 20), 18000);
 
     filterNode.current.type = settings.type;
-    filterNode.current.frequency.setTargetAtTime(safeFreq, currentTime, 0.02);
+    filterNode.current.frequency.setTargetAtTime(safeFreq, currentTime, 0.005);
     filterNode.current.detune.setTargetAtTime(
       settings.detune,
       currentTime,
