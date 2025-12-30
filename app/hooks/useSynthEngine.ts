@@ -39,9 +39,9 @@ export function useSynthEngine(
 
       const compressor = audioCtx.current.createDynamicsCompressor();
       compressor.threshold.setValueAtTime(-12, audioCtx.current.currentTime);
-      compressor.knee.setValueAtTime(40, audioCtx.current.currentTime);
+      compressor.knee.setValueAtTime(30, audioCtx.current.currentTime);
       compressor.ratio.setValueAtTime(12, audioCtx.current.currentTime);
-      compressor.attack.setValueAtTime(0, audioCtx.current.currentTime);
+      compressor.attack.setValueAtTime(0.003, audioCtx.current.currentTime);
       compressor.release.setValueAtTime(0.25, audioCtx.current.currentTime);
 
       const analyser = audioCtx.current.createAnalyser();
