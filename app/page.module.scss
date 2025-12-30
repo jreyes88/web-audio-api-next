@@ -13,7 +13,7 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-template-areas:
     "oscillators oscillators oscillators lfo"
-    "filter filter envelope mastervolume"
+    "filter envelope . ."
     "keyboard keyboard keyboard keyboard";
   gap: 12px;
   width: 1000px;

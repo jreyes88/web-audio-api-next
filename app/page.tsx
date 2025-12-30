@@ -5,7 +5,7 @@ import MasterVolume from "./components/MasterVolume";
 import Envelope from "./components/Envelope";
 import Oscillator from "./components/Oscillator";
 import Filter from "./components/Filter";
-import LFO from "./components/LFO";
+import VolumeLFO from "./components/VolumeLFO";
 import { useSynthEngine } from "./hooks/useSynthEngine";
 import {
   EnvelopeSettings,
@@ -191,7 +191,9 @@ export default function SynthPage() {
             handleOscillatorSettingsChange={handleOscillatorSettingsChange}
           />
         </div>
-        <LFO
+        <VolumeLFO
+          masterVolume={masterVolume}
+          handleMasterVolumeChange={handleMasterVolumeChange}
           lfoSettings={lfoSettings}
           handleLFOSettingsChange={handleLFOSettingsChange}
         />
@@ -203,10 +205,6 @@ export default function SynthPage() {
         <Envelope
           envelopeSettings={envelopeSettings}
           handleEnvelopeSettingsChange={handleEnvelopeSettingsChange}
-        />
-        <MasterVolume
-          masterVolume={masterVolume}
-          handleMasterVolumeChange={handleMasterVolumeChange}
         />
         <Keyboard onKeyDown={playNote} onKeyUp={stopNote} />
       </div>

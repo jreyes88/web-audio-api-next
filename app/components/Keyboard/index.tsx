@@ -24,7 +24,7 @@ export default function Keyboard({ onKeyDown, onKeyUp }: KeyboardProps) {
       height: 152,
       octaves: 2,
       startNote: "C4",
-      activeColour: "#6495ed",
+      activeColour: "#f3a7a7",
     });
 
     keyboard.keyDown = (note, freq) => onKeyDownRef.current(note, freq);
