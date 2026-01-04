@@ -1,5 +1,4 @@
-import React from "react";
-import { useId } from "react";
+import React, { useId } from "react";
 import { OscillatorSettings } from "../../types/types";
 import styles from "./Oscillator.module.scss";
 

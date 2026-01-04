@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useId } from "react";
 import { EnvelopeSettings } from "../../types/types";
 import styles from "./Envelope.module.scss";
 
@@ -6,16 +6,22 @@ interface EnvelopeComponentProps {
   envelopeSettings: EnvelopeSettings;
   handleEnvelopeSettingsChange: (vals: EnvelopeSettings) => void;
   variant: string;
+  handleExportPreset: () => void;
+  handleImportPreset: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function Envelope({
   envelopeSettings,
   handleEnvelopeSettingsChange,
   variant,
+  handleExportPreset,
+  handleImportPreset,
 }: EnvelopeComponentProps) {
+  const uniqueId = useId();
   const { attack, decay, sustain, release } = envelopeSettings;
-  const onChange = (e) => {
-    const prop = e.target.id;
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const id = e.target.id;
+    const prop = id.split("-").pop() as keyof EnvelopeSettings;
     const val = parseFloat(e.target.value);
     const nextEnvelopeSettings = {
       ...envelopeSettings,
@@ -33,7 +39,7 @@ export default function Envelope({
       </div>
       <div className="controls">
         <div className="range-container">
-          <label htmlFor="attack">
+          <label htmlFor={`${uniqueId}-attack`}>
             Attack <span className="right">{attack}</span>
           </label>
           <input
@@ -43,11 +49,11 @@ export default function Envelope({
             min="0"
             max="2"
             step="0.1"
-            id="attack"
+            id={`${uniqueId}-attack`}
           />
         </div>
         <div className="range-container">
-          <label htmlFor="decay">
+          <label htmlFor={`${uniqueId}-decay`}>
             Decay <span className="right">{decay}</span>
           </label>
           <input
@@ -57,11 +63,11 @@ export default function Envelope({
             min="0"
             max="1"
             step="0.01"
-            id="decay"
+            id={`${uniqueId}-decay`}
           />
         </div>
         <div className="range-container">
-          <label htmlFor="sustain">
+          <label htmlFor={`${uniqueId}-sustain`}>
             Sustain <span className="right">{sustain}</span>
           </label>
           <input
@@ -71,11 +77,11 @@ export default function Envelope({
             min="0"
             max="1"
             step="0.01"
-            id="sustain"
+            id={`${uniqueId}-sustain`}
           />
         </div>
         <div className="range-container">
-          <label htmlFor="release">
+          <label htmlFor={`${uniqueId}-release`}>
             Release <span className="right">{release}</span>
           </label>
           <input
@@ -85,10 +91,33 @@ export default function Envelope({
             min="0"
             max="2"
             step="0.01"
-            id="release"
+            id={`${uniqueId}-release`}
           />
         </div>
       </div>
+      {variant.toLocaleLowerCase() === "gain" && (
+        <>
+          <div className="header">
+            <h2>Export / Import presets</h2>
+          </div>
+          <div className="controls">
+            <div className="button-container">
+              <button onClick={handleExportPreset}>Export preset</button>
+            </div>
+            <div className="button-container">
+              <label className="import">
+                Import preset
+                <input
+                  type="file"
+                  accept=".json"
+                  onChange={handleImportPreset}
+                  style={{ display: "none" }}
+                />
+              </label>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

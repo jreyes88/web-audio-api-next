@@ -28,7 +28,6 @@ export default function SynthPage() {
     sustain: 0.44,
     release: 0.56,
   });
-
   const [oscillators, setOscillators] = useState<OscillatorBank>({
     osc1: {
       type: "square",
@@ -52,7 +51,6 @@ export default function SynthPage() {
       isMuted: false,
     },
   });
-
   const [filterSettings, setFilterSettings] = useState<FilterSettings>({
     type: "lowpass",
     frequency: 350,
@@ -67,7 +65,6 @@ export default function SynthPage() {
       release: 0.5,
     },
   });
-
   const [lfoSettings, setLFOSettings] = useState<LFOSettings>({
     type: "sine",
     rate: 5,
@@ -184,6 +181,50 @@ export default function SynthPage() {
     settingsRef.current.lfoSettings = nextLFOSettings;
   };
 
+  const handleExportPreset = () => {
+    const data = JSON.stringify(settingsRef.current, null, 2);
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `synth-preset-${new Date().getTime()}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportPreset = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const importedSettings: SynthSettings = JSON.parse(
+          e.target?.result as string
+        );
+
+        setMasterVolume(importedSettings.masterVolume);
+        setEnvelopeSettings(importedSettings.envelopeSettings);
+        setOscillators({
+          osc1: importedSettings.osc1,
+          osc2: importedSettings.osc2,
+          osc3: importedSettings.osc3,
+        });
+        setFilterSettings(importedSettings.filterSettings);
+        setLFOSettings(importedSettings.lfoSettings);
+
+        settingsRef.current = importedSettings;
+
+        updateMasterVolume(importedSettings.masterVolume);
+        updateFilter(importedSettings.filterSettings);
+      } catch (err) {
+        alert("Invalid preset file");
+        console.error(err);
+      }
+    };
+    reader.readAsText(file);
+  };
+
   return (
     <main className="">
       <h1 className={styles["heading"]}>Synth</h1>
@@ -220,6 +261,8 @@ export default function SynthPage() {
           envelopeSettings={envelopeSettings}
           handleEnvelopeSettingsChange={handleEnvelopeSettingsChange}
           variant="Gain"
+          handleExportPreset={handleExportPreset}
+          handleImportPreset={handleImportPreset}
         />
         <Envelope
           variant="Filter"
