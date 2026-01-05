@@ -6,8 +6,8 @@ interface EnvelopeComponentProps {
   envelopeSettings: EnvelopeSettings;
   handleEnvelopeSettingsChange: (vals: EnvelopeSettings) => void;
   variant: string;
-  handleExportPreset: () => void;
-  handleImportPreset: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleExportPreset?: () => void;
+  handleImportPreset?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function Envelope({
